@@ -3,6 +3,7 @@ package com.twu.biblioteca.controller;
 import com.twu.biblioteca.model.Book;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by carwest on 15-7-29.
@@ -31,5 +32,19 @@ public class BookManager {
             table.add(record);
         }
         return table;
+    }
+
+    public ArrayList<String> getBookDetailsHeader() {
+        final ArrayList<String> headers = new ArrayList<String>();
+        headers.add("title");
+        headers.add("author");
+        headers.add("year");
+        return headers;
+    }
+
+    public ArrayList<HashMap<String, String>> getMappedObjects() {
+        ArrayList<HashMap<String, String>> objList = new ArrayList<>();
+        bookArray.stream().forEach((obj)->{objList.add(obj.getMapped());});
+        return objList;
     }
 }

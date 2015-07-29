@@ -50,4 +50,21 @@ public class FrontEndTest {
         front.listBooks();
         assertEquals(outContent.toString(), "1\tC++\n2\tpython\n");
     }
+
+    @Test
+    public void should_get_detailed_books() throws Exception {
+        BookManager bookManager = new BookManager();
+        bookManager.add(new Book("CPP", "Stanley", 1984));
+        bookManager.add(new Book("python", "Monty", 1996));
+        FrontEnd frontEnd = new FrontEnd(bookManager);
+
+        frontEnd.listDetailedBooks();
+        assertEquals(outContent.toString(), "idx\ttitle\tauthor\tyear\n1\tCPP\tStanley\t1984\n2\tpython\tMonty\t1996\n");
+        outContent.reset();
+
+        bookManager.add(new Book("JAVA", "Marktin", 1998));
+        frontEnd.listDetailedBooks();
+        assertEquals(outContent.toString(), "idx\ttitle\tauthor\tyear\n1\tCPP\tStanley\t1984\n2\tpython\tMonty\t1996\n3\tJAVA\tMarktin\t1998\n");
+
+    }
 }
