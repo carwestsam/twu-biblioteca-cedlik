@@ -76,7 +76,7 @@ public class FrontEnd {
             ret += "\t" + bookDetailsHeader.get(i);
         } ret+= "\n";
 
-        for ( int i=0; i<bookManager.getCount(); i++){
+        for ( int i=0; i<mapped.size(); i++){
             ret += Integer.toString(i+1);
             HashMap<String, String> dict = mapped.get(i);
             for ( int j=0; j<bookDetailsHeader.size(); j++ ){
@@ -94,6 +94,7 @@ public class FrontEnd {
             System.out.print("\n---\n\n" +
                     "[1]list all the books\n" +
                     "[2]Checkout book\n" +
+                    "[3]Return book\n" +
                     "[0]quit\n" +
                     "Please input the instruction number:\n");
             int instr = scanner.nextInt();
@@ -130,6 +131,7 @@ public class FrontEnd {
                         System.out.print("Thank you for returning the book.\n");
                         break;
                     }else if ( result == 0 ){
+                        System.out.print("That is not a valid book to return.\n");
                         listBorrowedBooks();
                     }
                 }

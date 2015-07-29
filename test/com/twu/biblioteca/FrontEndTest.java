@@ -23,12 +23,13 @@ public class FrontEndTest {
     private String checkoutFailedContent;
     private String returnContent;
     private String returnSuccessContent;
+    private String returnFailedContent;
 
     @Before
     public void setUpStreams(){
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
-        menuContent = "\n---\n\n[1]list all the books\n[2]Checkout book\n[0]quit\nPlease input the instruction number:\n";
+        menuContent = "\n---\n\n[1]list all the books\n[2]Checkout book\n[3]Return book\n[0]quit\nPlease input the instruction number:\n";
         invalidContent = "Select a valid option!\n";
         quitContent = "Thanks for using\n";
         checkoutContent = "Choose the book number to checkout(0 to quit):\n";
@@ -36,6 +37,7 @@ public class FrontEndTest {
         checkoutFailedContent = "That book is not available.\n";
         returnContent = "Choose the book number to return(0 to quit):\n";
         returnSuccessContent = "Thank you for returning the book.\n";
+        returnFailedContent = "That is not a valid book to return.\n";
     }
 
     @After
@@ -197,16 +199,19 @@ public class FrontEndTest {
 
         FrontEnd frontEnd = new FrontEnd(bookManager);
         String backupList = frontEnd.listDetailedBookString();
-        ByteArrayInputStream input = new ByteArrayInputStream("1\n2\n1\n2\n1\n3\n2\n3\n1\n1\n0\n".getBytes());
+        ByteArrayInputStream input = new ByteArrayInputStream("1\n2\n1\n2\n1\n3\n3\n2\n3\n1\n1\n0\n".getBytes());
         System.setIn(input);
 
         frontEnd.displayMenu();
         assertEquals(outContent.toString(), menuContent + backupList +
                 menuContent + checkoutContent + checkoutSuccessContent +
                 menuContent + checkoutContent + checkoutSuccessContent +
-                menuContent + returnContent + returnSuccessContent +
+                menuContent + returnContent + returnFailedContent + "idx\ttitle\tauthor\tyear\n1\ta\t1\t1991\n2\tb\t2\t1992\n" +
+                returnContent + returnSuccessContent +
                 menuContent + returnContent + returnSuccessContent +
                 menuContent + "idx\ttitle\tauthor\tyear\n1\tc\t3\t1993\n2\tb\t2\t1992\n3\ta\t1\t1991\n" +
                 menuContent + quitContent);
     }
+
+    
 }
