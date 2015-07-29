@@ -108,15 +108,17 @@ public class FrontEnd {
             }else if ( 2 == instr ){
                 System.out.print("Choose the book number to checkout:\n");
                 int strIdx = scanner.nextInt();
-                checkoutBook(strIdx-1);
-                listDetailedBooks();
+                int result = checkoutBook(strIdx-1);
+                if ( result == 1 ){
+                    System.out.print("Thank you! Enjoy the book\n");
+                }
             }else {
                 System.out.println("Select a valid option!");
             }
         }
     }
 
-    public void checkoutBook(int idx) {
-        bookManager.checkoutById(idx);
+    public int checkoutBook(int idx) {
+        return bookManager.checkoutById(idx);
     }
 }

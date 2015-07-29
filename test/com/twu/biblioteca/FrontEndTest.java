@@ -19,6 +19,7 @@ public class FrontEndTest {
     private String invalidContent;
     private String quitContent;
     private String checkoutContent;
+    private String checkoutSuccessContent;
 
     @Before
     public void setUpStreams(){
@@ -28,6 +29,7 @@ public class FrontEndTest {
         invalidContent = "Select a valid option!\n";
         quitContent = "Thanks for using\n";
         checkoutContent = "Choose the book number to checkout:\n";
+        checkoutSuccessContent = "Thank you! Enjoy the book\n";
     }
 
     @After
@@ -142,7 +144,7 @@ public class FrontEndTest {
         System.setIn(input);
 
         frontEnd.displayMenu();
-        assertEquals(outContent.toString(), menuContent + backupList + menuContent + checkoutContent + "idx\ttitle\tauthor\tyear\n1\tb\t2\t1992\n2\tc\t3\t1993\n" + menuContent + quitContent);
+        assertEquals(outContent.toString(), menuContent + backupList + menuContent + checkoutContent + checkoutSuccessContent + menuContent + quitContent);
     }
 
     @Test
