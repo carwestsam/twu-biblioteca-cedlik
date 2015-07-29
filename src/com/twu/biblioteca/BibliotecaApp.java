@@ -11,7 +11,7 @@ public class BibliotecaApp {
         bookManager.add(new Book("python", "Monty", 1996));
         bookManager.add(new Book("JAVA", "Marktin", 1998));
         FrontEnd frontEnd = new FrontEnd(bookManager);
-        frontEnd.start();
-        frontEnd.listDetailedBooks();
+        frontEnd.displayWelcome();
+        frontEnd.displayMenu();
     }
 }

@@ -4,6 +4,7 @@ import com.twu.biblioteca.controller.BookManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * Created by carwest on 15-7-29.
@@ -20,7 +21,7 @@ public class FrontEnd {
         this.bookManager = null;
     }
 
-    public void start() {
+    public void displayWelcome() {
         System.out.println("Welcome to Biblioteca");
     }
 
@@ -61,6 +62,16 @@ public class FrontEnd {
                 System.out.print("\t" + dict.get(head));
             });
             System.out.println();
+        }
+    }
+
+    public void displayMenu() {
+        System.out.print("[1]list all the books\n" +
+                "Please input the instruction number:");
+        Scanner scanner = new Scanner(System.in);
+        int instr = scanner.nextInt();
+        if ( 1 == instr ){
+            listDetailedBooks();
         }
     }
 }
