@@ -106,11 +106,20 @@ public class FrontEnd {
                 System.out.print("Thanks for using\n");
                 break;
             }else if ( 2 == instr ){
-                System.out.print("Choose the book number to checkout:\n");
-                int strIdx = scanner.nextInt();
-                int result = checkoutBook(strIdx-1);
-                if ( result == 1 ){
-                    System.out.print("Thank you! Enjoy the book\n");
+                while (true) {
+                    System.out.print("Choose the book number to checkout(0 to quit):\n");
+                    int strIdx = scanner.nextInt();
+                    if ( strIdx == 0 ){
+                        break;
+                    }
+                    int result = checkoutBook(strIdx - 1);
+                    if (result == 1) {
+                        System.out.print("Thank you! Enjoy the book\n");
+                        break;
+                    }else if ( result == 0 ){
+                        System.out.print("That book is not available.\n");
+                        listDetailedBooks();
+                    }
                 }
             }else {
                 System.out.println("Select a valid option!");

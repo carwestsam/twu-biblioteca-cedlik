@@ -20,6 +20,7 @@ public class FrontEndTest {
     private String quitContent;
     private String checkoutContent;
     private String checkoutSuccessContent;
+    private String checkoutFailedContent;
 
     @Before
     public void setUpStreams(){
@@ -28,8 +29,9 @@ public class FrontEndTest {
         menuContent = "\n---\n\n[1]list all the books\n[2]Checkout book\n[0]quit\nPlease input the instruction number:\n";
         invalidContent = "Select a valid option!\n";
         quitContent = "Thanks for using\n";
-        checkoutContent = "Choose the book number to checkout:\n";
+        checkoutContent = "Choose the book number to checkout(0 to quit):\n";
         checkoutSuccessContent = "Thank you! Enjoy the book\n";
+        checkoutFailedContent = "That book is not available.\n";
     }
 
     @After
@@ -145,6 +147,28 @@ public class FrontEndTest {
 
         frontEnd.displayMenu();
         assertEquals(outContent.toString(), menuContent + backupList + menuContent + checkoutContent + checkoutSuccessContent + menuContent + quitContent);
+    }
+
+    @Test
+    public void should_check_out_a_book_fail() throws Exception {
+        BookManager bookManager = new BookManager();
+        bookManager.add(new Book("a", "1", 1991));
+        bookManager.add(new Book("b", "2", 1992));
+        bookManager.add(new Book("c", "3", 1993));
+
+        FrontEnd frontEnd = new FrontEnd(bookManager);
+
+        String backupList = frontEnd.listDetailedBookString();
+
+        ByteArrayInputStream input = new ByteArrayInputStream("1\n2\n4\n1\n0\n".getBytes());
+        System.setIn(input);
+
+        frontEnd.displayMenu();
+        assertEquals(outContent.toString(), menuContent + backupList +
+                menuContent + checkoutContent + checkoutFailedContent + backupList +
+                checkoutContent + checkoutSuccessContent +
+                menuContent + quitContent);
+
     }
 
     @Test
