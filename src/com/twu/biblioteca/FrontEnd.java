@@ -44,32 +44,59 @@ public class FrontEnd {
         }
     }
 
+
+
     public void listDetailedBooks() {
+        String out = listDetailedBookString();
+        System.out.print(out);
+    }
+
+    public String listDetailedBookString() {
+        String ret = "";
+
         final ArrayList<String> bookDetailsHeader = bookManager.getBookDetailsHeader();
-        System.out.print("idx");
+//        System.out.print("idx");
+
+        ret += "idx";
 
         ArrayList<HashMap<String, String>> mapped = bookManager.getMappedObjects();
 
-        bookDetailsHeader.stream().forEach((header) -> {
-            System.out.print("\t" + header);
-        });
-        System.out.println();
+//        bookDetailsHeader.stream().forEach((header) -> {
+//            System.out.print("\t" + header);
+//        });
+//        System.out.println();
+
+        for ( int i=0; i<bookDetailsHeader.size(); i++ ){
+            ret += "\t" + bookDetailsHeader.get(i);
+        } ret+= "\n";
+
+//        for ( int i=0; i<bookManager.getCount(); i++){
+//            System.out.print(i+1);
+//            HashMap<String, String> dict = mapped.get(i);
+//            bookDetailsHeader.stream().forEach((head)->{
+//                System.out.print("\t" + dict.get(head));
+//            });
+//            System.out.println();
+//        }
 
         for ( int i=0; i<bookManager.getCount(); i++){
-            System.out.print(i+1);
+            ret += Integer.toString(i+1);
             HashMap<String, String> dict = mapped.get(i);
-            bookDetailsHeader.stream().forEach((head)->{
-                System.out.print("\t" + dict.get(head));
-            });
-            System.out.println();
+            for ( int j=0; j<bookDetailsHeader.size(); j++ ){
+                ret += "\t" + dict.get(bookDetailsHeader.get(j));
+            }
+            ret += "\n";
         }
+        return ret;
     }
 
     public void displayMenu() {
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("[1]list all the books\n" +
+            System.out.print("\n---\n\n" +
+                    "[1]list all the books\n" +
+                    "[2]Checkout book\n" +
                     "[0]quit\n" +
                     "Please input the instruction number:\n");
             int instr = scanner.nextInt();
@@ -78,9 +105,18 @@ public class FrontEnd {
             }else if ( 0 == instr ){
                 System.out.print("Thanks for using\n");
                 break;
-            } else {
+            }else if ( 2 == instr ){
+                System.out.print("Choose the book number to checkout:\n");
+                int strIdx = scanner.nextInt();
+                checkoutBook(strIdx-1);
+                listDetailedBooks();
+            }else {
                 System.out.println("Select a valid option!");
             }
         }
+    }
+
+    public void checkoutBook(int idx) {
+        bookManager.checkoutById(idx);
     }
 }

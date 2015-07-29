@@ -47,4 +47,13 @@ public class BookManager {
         bookArray.stream().forEach((obj)->{objList.add(obj.getMapped());});
         return objList;
     }
+
+    public int checkoutById(int idx) {
+        if ( 0 <= idx && idx <bookArray.size() ){
+            bookArray.remove(idx);
+            return 1;
+        }else {
+            return 0;
+        }
+    }
 }

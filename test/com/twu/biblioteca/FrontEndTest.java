@@ -18,14 +18,16 @@ public class FrontEndTest {
     private String menuContent;
     private String invalidContent;
     private String quitContent;
+    private String checkoutContent;
 
     @Before
     public void setUpStreams(){
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
-        menuContent = "[1]list all the books\n[0]quit\nPlease input the instruction number:\n";
+        menuContent = "\n---\n\n[1]list all the books\n[2]Checkout book\n[0]quit\nPlease input the instruction number:\n";
         invalidContent = "Select a valid option!\n";
         quitContent = "Thanks for using\n";
+        checkoutContent = "Choose the book number to checkout:\n";
     }
 
     @After
@@ -123,5 +125,36 @@ public class FrontEndTest {
         assertEquals(outContent.toString(), menuContent +
                 "idx\ttitle\tauthor\tyear\n" +
                 "1\ta\taa\t1990\n" + menuContent + invalidContent + menuContent + quitContent);
+    }
+
+    @Test
+    public void check_out_a_book() throws Exception {
+        BookManager bookManager = new BookManager();
+        bookManager.add(new Book("a", "1", 1991));
+        bookManager.add(new Book("b", "2", 1992));
+        bookManager.add(new Book("c", "3", 1993));
+
+        FrontEnd frontEnd = new FrontEnd(bookManager);
+
+        String backupList = frontEnd.listDetailedBookString();
+
+        ByteArrayInputStream input = new ByteArrayInputStream("1\n2\n1\n0\n".getBytes());
+        System.setIn(input);
+
+        frontEnd.displayMenu();
+        assertEquals(outContent.toString(), menuContent + backupList + menuContent + checkoutContent + "idx\ttitle\tauthor\tyear\n1\tb\t2\t1992\n2\tc\t3\t1993\n" + menuContent + quitContent);
+    }
+
+    @Test
+    public void should_check_out_book() throws Exception {
+        BookManager bookManager = new BookManager();
+        bookManager.add(new Book("a", "1", 1991));
+        bookManager.add(new Book("b", "2", 1992));
+        bookManager.add(new Book("c", "3", 1993));
+        FrontEnd frontEnd = new FrontEnd(bookManager);
+        frontEnd.checkoutBook(0);
+        assertEquals("idx\ttitle\tauthor\tyear\n1\tb\t2\t1992\n2\tc\t3\t1993\n", frontEnd.listDetailedBookString() );
+        frontEnd.checkoutBook(1);
+        assertEquals("idx\ttitle\tauthor\tyear\n1\tb\t2\t1992\n", frontEnd.listDetailedBookString() );
     }
 }
