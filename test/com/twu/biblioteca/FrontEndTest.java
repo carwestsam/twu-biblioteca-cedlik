@@ -22,6 +22,7 @@ public class FrontEndTest {
     private String checkoutSuccessContent;
     private String checkoutFailedContent;
     private String returnContent;
+    private String returnSuccessContent;
 
     @Before
     public void setUpStreams(){
@@ -34,6 +35,7 @@ public class FrontEndTest {
         checkoutSuccessContent = "Thank you! Enjoy the book\n";
         checkoutFailedContent = "That book is not available.\n";
         returnContent = "Choose the book number to return(0 to quit):\n";
+        returnSuccessContent = "Thank you for returning the book.\n";
     }
 
     @After
@@ -202,8 +204,8 @@ public class FrontEndTest {
         assertEquals(outContent.toString(), menuContent + backupList +
                 menuContent + checkoutContent + checkoutSuccessContent +
                 menuContent + checkoutContent + checkoutSuccessContent +
-                menuContent + returnContent +
-                menuContent + returnContent +
+                menuContent + returnContent + returnSuccessContent +
+                menuContent + returnContent + returnSuccessContent +
                 menuContent + "idx\ttitle\tauthor\tyear\n1\tc\t3\t1993\n2\tb\t2\t1992\n3\ta\t1\t1991\n" +
                 menuContent + quitContent);
     }

@@ -127,6 +127,7 @@ public class FrontEnd {
                     }
                     int result = bookManager.handBackById(strIdx -1);
                     if ( result == 1){
+                        System.out.print("Thank you for returning the book.\n");
                         break;
                     }else if ( result == 0 ){
                         listBorrowedBooks();
