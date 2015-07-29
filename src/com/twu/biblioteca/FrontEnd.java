@@ -51,33 +51,30 @@ public class FrontEnd {
         System.out.print(out);
     }
 
-    public String listDetailedBookString() {
+    private void listBorrowedBooks() {
+        ArrayList<String> header = bookManager.getBookDetailsHeader();
+        ArrayList<HashMap<String, String>> mapped = bookManager.getMappedObjects(bookManager.getCheckArray());
+        System.out.print( printTable(header, mapped) );
+    }
+
+    public String listDetailedBookString(){
+        ArrayList<String> header = bookManager.getBookDetailsHeader();
+        ArrayList<HashMap<String, String>> mapped = bookManager.getMappedObjects(bookManager.getBookArray());
+        return printTable(header, mapped);
+    }
+
+    public String printTable(ArrayList<String> bookDetailsHeader, ArrayList<HashMap<String, String>> mapped) {
         String ret = "";
 
-        final ArrayList<String> bookDetailsHeader = bookManager.getBookDetailsHeader();
-//        System.out.print("idx");
+        //final ArrayList<String> bookDetailsHeader = bookManager.getBookDetailsHeader();
 
         ret += "idx";
 
-        ArrayList<HashMap<String, String>> mapped = bookManager.getMappedObjects();
-
-//        bookDetailsHeader.stream().forEach((header) -> {
-//            System.out.print("\t" + header);
-//        });
-//        System.out.println();
+        //ArrayList<HashMap<String, String>> mapped = bookManager.getMappedObjects(bookManager.getBookArray());
 
         for ( int i=0; i<bookDetailsHeader.size(); i++ ){
             ret += "\t" + bookDetailsHeader.get(i);
         } ret+= "\n";
-
-//        for ( int i=0; i<bookManager.getCount(); i++){
-//            System.out.print(i+1);
-//            HashMap<String, String> dict = mapped.get(i);
-//            bookDetailsHeader.stream().forEach((head)->{
-//                System.out.print("\t" + dict.get(head));
-//            });
-//            System.out.println();
-//        }
 
         for ( int i=0; i<bookManager.getCount(); i++){
             ret += Integer.toString(i+1);
@@ -121,10 +118,31 @@ public class FrontEnd {
                         listDetailedBooks();
                     }
                 }
-            }else {
+            }else if (3 == instr){
+                while (true){
+                    System.out.print("Choose the book number to return(0 to quit):\n");
+                    int strIdx = scanner.nextInt();
+                    if ( strIdx == 0 ){
+                        break;
+                    }
+                    int result = bookManager.handBackById(strIdx -1);
+                    if ( result == 1){
+                        break;
+                    }else if ( result == 0 ){
+                        listBorrowedBooks();
+                    }
+                }
+            }
+            else {
                 System.out.println("Select a valid option!");
             }
         }
+    }
+
+
+    private String listBorrowedBooksString() {
+
+        return null;
     }
 
     public int checkoutBook(int idx) {

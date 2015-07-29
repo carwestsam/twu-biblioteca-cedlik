@@ -21,6 +21,7 @@ public class FrontEndTest {
     private String checkoutContent;
     private String checkoutSuccessContent;
     private String checkoutFailedContent;
+    private String returnContent;
 
     @Before
     public void setUpStreams(){
@@ -32,6 +33,7 @@ public class FrontEndTest {
         checkoutContent = "Choose the book number to checkout(0 to quit):\n";
         checkoutSuccessContent = "Thank you! Enjoy the book\n";
         checkoutFailedContent = "That book is not available.\n";
+        returnContent = "Choose the book number to return(0 to quit):\n";
     }
 
     @After
@@ -182,5 +184,27 @@ public class FrontEndTest {
         assertEquals("idx\ttitle\tauthor\tyear\n1\tb\t2\t1992\n2\tc\t3\t1993\n", frontEnd.listDetailedBookString() );
         frontEnd.checkoutBook(1);
         assertEquals("idx\ttitle\tauthor\tyear\n1\tb\t2\t1992\n", frontEnd.listDetailedBookString() );
+    }
+
+    @Test
+    public void should_return_a_book() throws Exception {
+        BookManager bookManager = new BookManager();
+        bookManager.add(new Book("a", "1", 1991));
+        bookManager.add(new Book("b", "2", 1992));
+        bookManager.add(new Book("c", "3", 1993));
+
+        FrontEnd frontEnd = new FrontEnd(bookManager);
+        String backupList = frontEnd.listDetailedBookString();
+        ByteArrayInputStream input = new ByteArrayInputStream("1\n2\n1\n2\n1\n3\n2\n3\n1\n1\n0\n".getBytes());
+        System.setIn(input);
+
+        frontEnd.displayMenu();
+        assertEquals(outContent.toString(), menuContent + backupList +
+                menuContent + checkoutContent + checkoutSuccessContent +
+                menuContent + checkoutContent + checkoutSuccessContent +
+                menuContent + returnContent +
+                menuContent + returnContent +
+                menuContent + "idx\ttitle\tauthor\tyear\n1\tc\t3\t1993\n2\tb\t2\t1992\n3\ta\t1\t1991\n" +
+                menuContent + quitContent);
     }
 }

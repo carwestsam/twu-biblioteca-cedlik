@@ -10,7 +10,10 @@ import java.util.HashMap;
  */
 public class BookManager {
 
+
+
     private ArrayList<Book> bookArray = new ArrayList<Book>();
+    private ArrayList<Book> checkArray = new ArrayList<Book>();
 
     public Integer getCount() {
         return bookArray.size();
@@ -42,18 +45,43 @@ public class BookManager {
         return headers;
     }
 
-    public ArrayList<HashMap<String, String>> getMappedObjects() {
+    public ArrayList<HashMap<String, String>> getMappedObjects(ArrayList<Book> table) {
         ArrayList<HashMap<String, String>> objList = new ArrayList<>();
-        bookArray.stream().forEach((obj)->{objList.add(obj.getMapped());});
+        table.stream().forEach((obj)->{objList.add(obj.getMapped());});
         return objList;
+    }
+
+    public ArrayList<Book> getBookArray() {
+        return bookArray;
     }
 
     public int checkoutById(int idx) {
         if ( 0 <= idx && idx <bookArray.size() ){
+            checkArray.add(bookArray.get(idx));
             bookArray.remove(idx);
             return 1;
         }else {
             return 0;
         }
     }
+
+    public Integer getBorrowedCount() {
+        return checkArray.size();
+    }
+
+    public ArrayList<Book> getCheckArray() {
+        return checkArray;
+    }
+
+    public int handBackById(int idx) {
+        if ( 0 <= idx && idx < checkArray.size()){
+            bookArray.add(checkArray.get(idx));
+            checkArray.remove(idx);
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+
+
 }
