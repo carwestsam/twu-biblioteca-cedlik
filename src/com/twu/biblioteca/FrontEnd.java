@@ -66,12 +66,21 @@ public class FrontEnd {
     }
 
     public void displayMenu() {
-        System.out.print("[1]list all the books\n" +
-                "Please input the instruction number:");
+
         Scanner scanner = new Scanner(System.in);
-        int instr = scanner.nextInt();
-        if ( 1 == instr ){
-            listDetailedBooks();
+        while (true) {
+            System.out.print("[1]list all the books\n" +
+                    "[0]quit\n" +
+                    "Please input the instruction number:\n");
+            int instr = scanner.nextInt();
+            if (1 == instr) {
+                listDetailedBooks();
+            }else if ( 0 == instr ){
+                System.out.print("Thanks for using\n");
+                break;
+            } else {
+                System.out.println("Select a valid option!");
+            }
         }
     }
 }

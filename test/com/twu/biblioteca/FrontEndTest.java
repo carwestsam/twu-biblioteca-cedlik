@@ -15,11 +15,17 @@ import static org.junit.Assert.*;
 public class FrontEndTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    private String menuContent;
+    private String invalidContent;
+    private String quitContent;
 
     @Before
     public void setUpStreams(){
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
+        menuContent = "[1]list all the books\n[0]quit\nPlease input the instruction number:\n";
+        invalidContent = "Select a valid option!\n";
+        quitContent = "Thanks for using\n";
     }
 
     @After
@@ -71,8 +77,10 @@ public class FrontEndTest {
     @Test
     public void should_print_menu_inform() throws Exception {
         FrontEnd frontEnd = new FrontEnd(new BookManager());
+        ByteArrayInputStream input = new ByteArrayInputStream("0\n".getBytes());
+        System.setIn(input);
         frontEnd.displayMenu();
-        assertEquals(outContent.toString(), "[1]list all the books\nPlease input the instruction number:");
+        assertEquals(outContent.toString(), menuContent + quitContent);
     }
 
     @Test
@@ -81,12 +89,39 @@ public class FrontEndTest {
         bookManager.add(new Book("a", "aa", 1990));
         FrontEnd frontEnd = new FrontEnd(bookManager);
 
-        ByteArrayInputStream input = new ByteArrayInputStream("1\n".getBytes());
+        ByteArrayInputStream input = new ByteArrayInputStream("1\n0\n".getBytes());
         System.setIn(input);
         frontEnd.displayMenu();
-        assertEquals(outContent.toString(), "[1]list all the books\n" +
-                "Please input the instruction number:" + "idx\ttitle\tauthor\tyear\n" +
-                "1\ta\taa\t1990\n");
+        assertEquals(outContent.toString(), menuContent + "idx\ttitle\tauthor\tyear\n" +
+                "1\ta\taa\t1990\n" + menuContent + quitContent);
         System.setIn(null);
+    }
+
+    @Test
+    public void should_warrning_invalid_instruction() throws Exception {
+        BookManager bookManager = new BookManager();
+        bookManager.add(new Book("a", "aa", 1990));
+        FrontEnd frontEnd = new FrontEnd(bookManager);
+
+        ByteArrayInputStream input = new ByteArrayInputStream("100\n0\n".getBytes());
+        System.setIn(input);
+        frontEnd.displayMenu();
+        assertEquals(outContent.toString(), menuContent + invalidContent + menuContent + quitContent);
+        System.setIn(null);
+    }
+
+    @Test
+    public void should_loop_the_menu_and_quit() throws Exception {
+        BookManager bookManager = new BookManager();
+        bookManager.add(new Book("a", "aa", 1990));
+        FrontEnd frontEnd = new FrontEnd(bookManager);
+
+        ByteArrayInputStream input = new ByteArrayInputStream("1\n7\n0\n".getBytes());
+        System.setIn(input);
+        frontEnd.displayMenu();
+
+        assertEquals(outContent.toString(), menuContent +
+                "idx\ttitle\tauthor\tyear\n" +
+                "1\ta\taa\t1990\n" + menuContent + invalidContent + menuContent + quitContent);
     }
 }
