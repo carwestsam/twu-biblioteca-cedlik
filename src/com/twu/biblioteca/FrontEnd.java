@@ -95,6 +95,7 @@ public class FrontEnd {
                     "[1]list all the books\n" +
                     "[2]Checkout book\n" +
                     "[3]Return book\n" +
+                    "[4]List all the borrowed books\n" +
                     "[0]quit\n" +
                     "Please input the instruction number:\n");
             int instr = scanner.nextInt();
@@ -135,6 +136,8 @@ public class FrontEnd {
                         listBorrowedBooks();
                     }
                 }
+            }else if ( 4 == instr ){
+                listBorrowedBooks();
             }
             else {
                 System.out.println("Select a valid option!");
