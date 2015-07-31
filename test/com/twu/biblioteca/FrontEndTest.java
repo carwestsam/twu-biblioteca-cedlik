@@ -182,6 +182,16 @@ public class FrontEndTest {
     }
 
     @Test
+    public void should_display_invalid_instruction() throws Exception {
+        ItemManager itemManager = new ItemManager();
+        addItems(itemManager);
+        FrontEnd2 frontEnd2 = new FrontEnd2(itemManager);
+        consoleInput("100\n0\n");
+        frontEnd2.displayMenu();
+        assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.invalid() + FrontEnd2.menu() + FrontEnd2.quit());
+    }
+
+    @Test
     public void should_loop_the_menu_and_quit() throws Exception {
         BookManager bookManager = new BookManager();
         bookManager.add(new Book("a", "aa", 1990));

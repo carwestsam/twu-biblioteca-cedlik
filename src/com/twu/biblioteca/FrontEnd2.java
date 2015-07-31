@@ -54,7 +54,8 @@ public class FrontEnd2 {
                     display(quit());
                     return;
                 default:
-                    return;
+                    display(invalid());
+                    break;
             }
         }
     }
@@ -74,4 +75,7 @@ public class FrontEnd2 {
     }
 
 
+    public static String invalid() {
+        return "Select a valid option!";
+    }
 }
