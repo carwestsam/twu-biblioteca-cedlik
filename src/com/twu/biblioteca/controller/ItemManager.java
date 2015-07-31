@@ -23,9 +23,9 @@ public class ItemManager {
 
     public ArrayList<Item> getItemListByType(Item.TYPES itemType) {
         ArrayList<Item> items = new ArrayList<>();
-        for (Item anItemList : itemList) {
-            if (itemType == anItemList.getType()) {
-                items.add(anItemList);
+        for (Item item : itemList) {
+            if (itemType == item.getType() && item.getCheckout() == 0) {
+                items.add(item);
             }
         }
         return items;
@@ -41,5 +41,15 @@ public class ItemManager {
             default:
                 return new ArrayList<String>();
         }
+    }
+
+    public int checkoutById(int id, Item.TYPES itemType) {
+        for ( Item item : itemList){
+            if ( item.getId() == id && item.getType() == itemType ){
+                item.checkout();
+                return 0;
+            }
+        }
+        return 1;
     }
 }

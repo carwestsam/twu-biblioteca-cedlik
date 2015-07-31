@@ -14,12 +14,13 @@ import java.util.Scanner;
 public class FrontEnd2 {
 
     private final ItemManager itemManager;
+    private Scanner scanner;
 
     public FrontEnd2(ItemManager itemManager) {
         this.itemManager = itemManager;
     }
 
-    public String displayWelcome() {
+    public String welcome() {
         return "Welcome to Biblioteca\n";
     }
 
@@ -41,7 +42,7 @@ public class FrontEnd2 {
     }
 
     public void displayMenu() {
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         while ( true ){
             display(menu());
             int instr = scanner.nextInt();
@@ -49,6 +50,9 @@ public class FrontEnd2 {
             switch (instr){
                 case 1:
                     displayBooks();
+                    break;
+                case 2:
+                    displayCheckout(Item.TYPES.Book);
                     break;
                 case 0:
                     display(quit());
@@ -58,6 +62,25 @@ public class FrontEnd2 {
                     break;
             }
         }
+    }
+
+    private void displayCheckout(Item.TYPES itemType) {
+        while (true){
+            display(checkoutContent());
+            int instr = scanner.nextInt();
+
+            int statu = itemManager.checkoutById(instr, itemType);
+
+            if ( 0 == statu ){
+                display(checkoutSuccessContent());
+                break;
+            }else if ( 1 == statu ){
+                display(checkoutFailedContent());
+            }else {
+                display(checkoutFailedContent());
+            }
+        }
+
     }
 
     public static String menu() {
@@ -77,5 +100,17 @@ public class FrontEnd2 {
 
     public static String invalid() {
         return "Select a valid option!";
+    }
+
+    public static String checkoutContent() {
+        return "Choose the book number to checkout(0 to quit):\n";
+    }
+
+    public static String checkoutSuccessContent() {
+        return "Thank you! Enjoy the book\n";
+    }
+
+    public static String checkoutFailedContent() {
+        return "That book is not available.\n";
     }
 }

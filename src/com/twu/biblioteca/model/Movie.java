@@ -60,6 +60,7 @@ public class Movie extends Item{
 
     public HashMap<String, String> getHashMap() {
         HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("id", Integer.toString(getId()));
         hashMap.put("name", getName());
         hashMap.put("year", Integer.toString(getYear()));
         hashMap.put("director", getDirector());
@@ -73,6 +74,7 @@ public class Movie extends Item{
 
     public static ArrayList<String> getDictNamesStatic() {
         ArrayList<String> dict = new ArrayList<>();
+        dict.add("id");
         dict.add("name");
         dict.add("year");
         dict.add("director");

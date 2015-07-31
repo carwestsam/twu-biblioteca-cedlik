@@ -5,6 +5,7 @@ import com.twu.biblioteca.controller.ItemManager;
 import com.twu.biblioteca.model.Book;
 import com.twu.biblioteca.model.Item;
 import com.twu.biblioteca.model.Movie;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class FrontEndTest {
@@ -52,6 +54,8 @@ public class FrontEndTest {
         System.setErr(null);
         outContent.reset();
     }
+
+    @Ignore
     @Test
     public void should_Welcome() throws Exception {
         FrontEnd front = new FrontEnd();
@@ -63,7 +67,7 @@ public class FrontEndTest {
     public void should_Welcome2() throws Exception {
         FrontEnd2 frontEnd2 = new FrontEnd2(new ItemManager());
 
-        frontEnd2.display(frontEnd2.displayWelcome());
+        frontEnd2.display(frontEnd2.welcome());
         assertEquals(welcomeContent, outContent.toString());
     }
 
@@ -241,6 +245,24 @@ public class FrontEndTest {
     }
 
     @Test
+    public void should_check_out_a_book() throws Exception {
+        ItemManager itemManager = new ItemManager();
+        addItems(itemManager);
+        FrontEnd2 frontEnd2 = new FrontEnd2(itemManager);
+
+        String backupBooks = frontEnd2.Books();
+
+        consoleInput("1\n2\n1\n1\n0\n");
+        frontEnd2.displayMenu();
+        assertEquals(outContent.toString(),
+                FrontEnd2.menu() + backupBooks +
+                FrontEnd2.menu() + FrontEnd2.checkoutContent() + FrontEnd2.checkoutSuccessContent() +
+                FrontEnd2.menu() + frontEnd2.Books() +
+                FrontEnd2.menu() + FrontEnd2.quit());
+        assertThat(itemManager.getItemListByType(Item.TYPES.Book).size(), is(3));
+    }
+
+    @Test
     public void should_check_out_a_book_fail() throws Exception {
         BookManager bookManager = new BookManager();
         bookManager.add(new Book("a", "1", 1991));
@@ -263,6 +285,26 @@ public class FrontEndTest {
     }
 
     @Test
+    public void should_check_out_a_book_failed() throws Exception {
+        ItemManager itemManager = new ItemManager();
+        addItems(itemManager);
+        FrontEnd2 frontEnd2 = new FrontEnd2(itemManager);
+
+        String backupBooks = frontEnd2.Books();
+
+        consoleInput("1\n2\n3\n1\n1\n0\n");
+        frontEnd2.displayMenu();
+        assertEquals(outContent.toString(),
+                FrontEnd2.menu() + backupBooks +
+                        FrontEnd2.menu() + FrontEnd2.checkoutContent() + FrontEnd2.checkoutFailedContent() +
+                        FrontEnd2.checkoutContent() + FrontEnd2.checkoutSuccessContent() +
+                        FrontEnd2.menu() + frontEnd2.Books() +
+                        FrontEnd2.menu() + FrontEnd2.quit());
+        assertThat(itemManager.getItemListByType(Item.TYPES.Book).size(), is(3));
+        assertThat(itemManager.getItemListByType(Item.TYPES.Movie).size(), is(3));
+    }
+
+    @Test
     public void should_check_out_book() throws Exception {
         BookManager bookManager = new BookManager();
         bookManager.add(new Book("a", "1", 1991));
@@ -274,6 +316,8 @@ public class FrontEndTest {
         frontEnd.checkoutBook(1);
         assertEquals("idx\ttitle\tauthor\tyear\n1\tb\t2\t1992\n", frontEnd.listDetailedBookString() );
     }
+
+
 
     @Test
     public void should_return_a_book() throws Exception {

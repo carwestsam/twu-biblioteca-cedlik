@@ -11,6 +11,15 @@ public abstract class Item {
     private TYPES type;
     private static int ID_INC = 0;
     private int id = 0;
+
+    public boolean checkout() {
+        checkout = 1;
+        return true;
+    }
+    public int getCheckout(){
+        return checkout;
+    }
+
     public enum TYPES {Book, Movie};
 
     public static void resetId(){
