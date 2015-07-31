@@ -207,6 +207,22 @@ public class FrontEndTest {
     }
 
     @Test
+    public void should_loop_the_menu() throws Exception {
+        ItemManager itemManager = new ItemManager();
+        addItems(itemManager);
+        FrontEnd2 frontEnd2 = new FrontEnd2(itemManager);
+
+        consoleInput("1\n7\n0\n");
+
+        frontEnd2.displayMenu();
+
+        assertEquals(outContent.toString(),
+                FrontEnd2.menu() + frontEnd2.Books() +
+                FrontEnd2.menu() + FrontEnd2.invalid() +
+                FrontEnd2.menu() + FrontEnd2.quit());
+    }
+
+    @Test
     public void check_out_a_book() throws Exception {
         BookManager bookManager = new BookManager();
         bookManager.add(new Book("a", "1", 1991));
