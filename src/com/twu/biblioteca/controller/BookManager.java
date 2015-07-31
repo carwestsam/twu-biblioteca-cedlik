@@ -47,7 +47,7 @@ public class BookManager {
 
     public ArrayList<HashMap<String, String>> getMappedObjects(ArrayList<Book> table) {
         ArrayList<HashMap<String, String>> objList = new ArrayList<>();
-        table.stream().forEach((obj)->{objList.add(obj.getMapped());});
+        table.stream().forEach((obj)->{objList.add(obj.getHashMap());});
         return objList;
     }
 

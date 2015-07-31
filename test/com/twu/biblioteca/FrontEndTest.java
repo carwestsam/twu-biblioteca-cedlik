@@ -1,7 +1,10 @@
 package com.twu.biblioteca;
 
 import com.twu.biblioteca.controller.BookManager;
+import com.twu.biblioteca.controller.ItemManager;
 import com.twu.biblioteca.model.Book;
+import com.twu.biblioteca.model.Item;
+import com.twu.biblioteca.model.Movie;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,11 +27,14 @@ public class FrontEndTest {
     private String returnContent;
     private String returnSuccessContent;
     private String returnFailedContent;
+    private String welcomeContent;
 
     @Before
     public void setUpStreams(){
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
+        Item.resetId();
+        welcomeContent = "Welcome to Biblioteca\n";
         menuContent = "\n---\n\n[1]list all the books\n[2]Checkout book\n[3]Return book\n[4]List all the borrowed books\n[0]quit\nPlease input the instruction number:\n";
         invalidContent = "Select a valid option!\n";
         quitContent = "Thanks for using\n";
@@ -49,9 +55,16 @@ public class FrontEndTest {
     @Test
     public void should_Welcome() throws Exception {
         FrontEnd front = new FrontEnd();
-
         front.displayWelcome();
-        assertEquals("Welcome to Biblioteca\n", outContent.toString());
+        assertEquals(welcomeContent, outContent.toString());
+    }
+
+    @Test
+    public void should_Welcome2() throws Exception {
+        FrontEnd2 frontEnd2 = new FrontEnd2(new ItemManager());
+
+        frontEnd2.display(frontEnd2.displayWelcome());
+        assertEquals(welcomeContent, outContent.toString());
     }
 
     @Test
@@ -70,6 +83,8 @@ public class FrontEndTest {
         assertEquals(outContent.toString(), "1\tC++\n2\tpython\n");
     }
 
+
+
     @Test
     public void should_get_detailed_books() throws Exception {
         BookManager bookManager = new BookManager();
@@ -87,12 +102,36 @@ public class FrontEndTest {
     }
 
     @Test
+    public void should_list_books2() throws Exception {
+        ItemManager itemManager = new ItemManager();
+        itemManager.add(new Book("CPP", "Stanley", 1984));
+        itemManager.add(new Book("python", "Monty", 1996));
+        FrontEnd2 frontEnd2 = new FrontEnd2(itemManager);
+
+        frontEnd2.displayBooks();
+        assertEquals(outContent.toString(), "id\ttitle\tauthor\tyear\t\n1\tCPP\tStanley\t1984\t\n2\tpython\tMonty\t1996\t\n");
+    }
+
+    @Test
     public void should_print_menu_inform() throws Exception {
         FrontEnd frontEnd = new FrontEnd(new BookManager());
         ByteArrayInputStream input = new ByteArrayInputStream("0\n".getBytes());
         System.setIn(input);
         frontEnd.displayMenu();
         assertEquals(outContent.toString(), menuContent + quitContent);
+    }
+
+    private void consoleInput(String instruction){
+        ByteArrayInputStream input = new ByteArrayInputStream(instruction.getBytes());
+        System.setIn(input);
+    }
+
+    @Test
+    public void should_print_menu_inform2() throws Exception {
+        FrontEnd2 frontEnd2 = new FrontEnd2(new ItemManager());
+        consoleInput("0\n");
+        frontEnd2.displayMenu();
+        assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.quit());
     }
 
     @Test
@@ -107,6 +146,26 @@ public class FrontEndTest {
         assertEquals(outContent.toString(), menuContent + "idx\ttitle\tauthor\tyear\n" +
                 "1\ta\taa\t1990\n" + menuContent + quitContent);
         System.setIn(null);
+    }
+
+    @Test
+    public void should_display_Book_List() throws Exception {
+        ItemManager itemManager = new ItemManager();
+        addItems(itemManager);
+        FrontEnd2 frontEnd2 = new FrontEnd2(itemManager);
+        consoleInput("1\n0\n");
+        frontEnd2.displayMenu();
+        assertEquals(outContent.toString(), FrontEnd2.menu() + frontEnd2.Books() + FrontEnd2.menu() + FrontEnd2.quit());
+    }
+
+    private void addItems(ItemManager itemManager) {
+        itemManager.add(new Book("a", "aa", 1992));
+        itemManager.add(new Book("b", "bb", 1993));
+        itemManager.add(new Movie("A", 1931, "AA", 5));
+        itemManager.add(new Book("c", "cc", 1994));
+        itemManager.add(new Movie("B", 1932, "BB", -1));
+        itemManager.add(new Movie("C", 1933, "CC", 2));
+        itemManager.add(new Book("d", "dd", 1995));
     }
 
     @Test
