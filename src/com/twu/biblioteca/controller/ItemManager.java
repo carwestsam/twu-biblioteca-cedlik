@@ -21,7 +21,7 @@ public class ItemManager {
         return itemList;
     }
 
-    public ArrayList<Item> getItemListByType(Item.TYPES itemType) {
+    public ArrayList<Item> getAvailableItemListByType(Item.TYPES itemType) {
         ArrayList<Item> items = new ArrayList<>();
         for (Item item : itemList) {
             if (itemType == item.getType() && item.getCheckout() == 0) {
@@ -48,6 +48,20 @@ public class ItemManager {
             if ( item.getId() == id && item.getType() == itemType ){
                 item.checkout();
                 return 0;
+            }
+        }
+        return 1;
+    }
+
+    public int returnItemById(int id, Item.TYPES itemType) {
+        for ( Item item : itemList){
+            if ( item.getId() == id ){
+                if ( item.getCheckout() == 1 && item.getType() == itemType ){
+                    item.unCheckout();
+                    return 0;
+                }else {
+                    return 1;
+                }
             }
         }
         return 1;

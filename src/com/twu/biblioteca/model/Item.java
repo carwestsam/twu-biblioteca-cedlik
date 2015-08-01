@@ -20,7 +20,12 @@ public abstract class Item {
         return checkout;
     }
 
-    public enum TYPES {Book, Movie};
+    public void unCheckout() {
+        checkout -= 1;
+    }
+
+
+    public enum TYPES {Book, DEF, Movie};
 
     public static void resetId(){
         ID_INC = 0;
