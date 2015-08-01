@@ -34,21 +34,11 @@ public class FrontEnd2 {
     }
 
     public String Books() {
-        ArrayList<Item> itemListByType = itemManager.getAvailableItemListByType(Item.TYPES.Book);
-        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
-        for ( Item item : itemListByType ){
-            mapList.add(item.getHashMap());
-        }
-        return (new Table(itemManager.getHeaderListByType(Item.TYPES.Book), mapList)).Serial();
+        return available(Item.TYPES.Book);
     }
 
     public String Movies() {
-        ArrayList<Item> itemListByType = itemManager.getAvailableItemListByType(Item.TYPES.Movie);
-        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
-        for ( Item item : itemListByType ){
-            mapList.add(item.getHashMap());
-        }
-        return (new Table(itemManager.getHeaderListByType(Item.TYPES.Movie), mapList)).Serial();
+        return available(Item.TYPES.Movie);
     }
 
     public String available(Item.TYPES itemType) {
@@ -84,6 +74,12 @@ public class FrontEnd2 {
                     break;
                 case 6:
                     displayCheckout(Item.TYPES.Movie);
+                    break;
+                case 7:
+                    displayReturn(Item.TYPES.Movie);
+                    break;
+                case 8:
+                    display(available(Item.TYPES.Movie));
                     break;
                 case 0:
                     display(quit());
@@ -138,11 +134,14 @@ public class FrontEnd2 {
     }
     public static String menu() {
         String menu = "\n---\n\n" +
-                "[1]list all the books\n" +
+                "[1]List all the books\n" +
                 "[2]Checkout book\n" +
                 "[3]Return book\n" +
-                "[4]List all the borrowed books\n" +
+                "[4]List all borrowed Books\n" +
                 "[5]List Movies\n" +
+                "[6]Checkout Movie\n" +
+                "[7]Return Movie\n" +
+                "[8]List all borrowed Movies\n" +
                 "[0]quit\n" +
                 "Please input the instruction number:\n";
         return menu;

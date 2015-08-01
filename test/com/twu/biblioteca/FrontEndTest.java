@@ -233,7 +233,7 @@ public class FrontEndTest {
         addItems(itemManager);
         FrontEnd2 frontEnd2 = new FrontEnd2(itemManager);
 
-        consoleInput("1\n7\n0\n");
+        consoleInput("1\n11\n0\n");
 
         frontEnd2.displayMenu();
 
@@ -406,6 +406,29 @@ public class FrontEndTest {
     }
 
     @Test
+    public void should_return_movies() throws Exception {
+        ItemManager itemManager = new ItemManager();
+        addItems(itemManager);
+        FrontEnd2 front = new FrontEnd2(itemManager);
+
+        consoleInput("5\n6\n5\n6\n6\n7\n6\n8\n0\n");
+
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie).size(), is(3));
+
+        String backup = front.Movies();
+        front.displayMenu();
+
+        assertEquals(outContent.toString(), FrontEnd2.menu() + backup +
+                FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
+                FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
+                FrontEnd2.menu() + FrontEnd2.returnContent(Item.TYPES.Movie) + FrontEnd2.returnSuccessContent(Item.TYPES.Movie) +
+                FrontEnd2.menu() + front.Movies() +
+                FrontEnd2.menu() + FrontEnd2.quit());
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie).size(), is(2));
+    }
+
+    @Ignore
+    @Test
     public void should_list_borrowed_books() throws Exception {
         BookManager bookManager = new BookManager();
         bookManager.add(new Book("a", "1", 1991));
@@ -438,5 +461,5 @@ public class FrontEndTest {
         assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book).size(), is (3));
     }
 
-    
+
 }
