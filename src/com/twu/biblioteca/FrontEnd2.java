@@ -34,15 +34,19 @@ public class FrontEnd2 {
     }
 
     public String Books() {
-        return available(Item.TYPES.Book);
+        return available(Item.TYPES.Book, 0);
     }
 
     public String Movies() {
-        return available(Item.TYPES.Movie);
+        return available(Item.TYPES.Movie, 0);
     }
 
-    public String available(Item.TYPES itemType) {
-        ArrayList<Item> itemListByType = itemManager.getAvailableItemListByType(itemType);
+    public String unAvailable(Item.TYPES itemType) {
+        return available(itemType, 1);
+    }
+
+    public String available(Item.TYPES itemType, int available) {
+        ArrayList<Item> itemListByType = itemManager.getAvailableItemListByType(itemType, available);
         ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
         for ( Item item : itemListByType ){
             mapList.add(item.getHashMap());
@@ -67,7 +71,7 @@ public class FrontEnd2 {
                     displayReturn(Item.TYPES.Book);
                     break;
                 case 4:
-                    display(available(Item.TYPES.Book));
+                    display(available(Item.TYPES.Book, 1));
                     break;
                 case 5:
                     display(Movies());
@@ -79,7 +83,7 @@ public class FrontEnd2 {
                     displayReturn(Item.TYPES.Movie);
                     break;
                 case 8:
-                    display(available(Item.TYPES.Movie));
+                    display(available(Item.TYPES.Movie, 1));
                     break;
                 case 0:
                     display(quit());
@@ -231,6 +235,5 @@ public class FrontEnd2 {
         contents.put(Item.TYPES.DEF, "return item failed\n");
         return contents;
     }
-
 
 }

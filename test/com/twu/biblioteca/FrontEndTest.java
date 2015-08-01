@@ -174,7 +174,7 @@ public class FrontEndTest {
         consoleInput("5\n0\n");
         front.displayMenu();
         assertEquals(outContent.toString(), FrontEnd2.menu() + front.Movies() + FrontEnd2.menu() + FrontEnd2.quit());
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie).size(), is(3));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 0).size(), is(3));
     }
 
     private void addItems(ItemManager itemManager) {
@@ -277,7 +277,7 @@ public class FrontEndTest {
                 FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Book) +
                 FrontEnd2.menu() + frontEnd2.Books() +
                 FrontEnd2.menu() + FrontEnd2.quit());
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book).size(), is(3));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book, 0).size(), is(3));
     }
 
     @Test
@@ -297,7 +297,7 @@ public class FrontEndTest {
                 FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
                 FrontEnd2.menu() + front.Movies() +
                 FrontEnd2.menu() + FrontEnd2.quit());
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie).size(), is(2));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 0).size(), is(2));
     }
 
 
@@ -340,8 +340,8 @@ public class FrontEndTest {
                         FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Book) +
                         FrontEnd2.menu() + frontEnd2.Books() +
                         FrontEnd2.menu() + FrontEnd2.quit());
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book).size(), is(3));
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie).size(), is(3));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book, 0).size(), is(3));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 0).size(), is(3));
     }
 
     @Ignore
@@ -391,7 +391,7 @@ public class FrontEndTest {
 
         consoleInput("1\n2\n1\n2\n4\n3\n4\n1\n0\n");
 
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book).size(), is(4));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book, 0).size(), is(4));
 
         String backup = front.Books();
         front.displayMenu();
@@ -402,7 +402,7 @@ public class FrontEndTest {
                 FrontEnd2.menu() + FrontEnd2.returnContent(Item.TYPES.Book) + FrontEnd2.returnSuccessContent(Item.TYPES.Book) +
                 FrontEnd2.menu() + front.Books() +
                 FrontEnd2.menu() + FrontEnd2.quit());
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book).size(), is(3));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book, 0).size(), is(3));
     }
 
     @Test
@@ -413,7 +413,7 @@ public class FrontEndTest {
 
         consoleInput("5\n6\n5\n6\n6\n7\n6\n8\n0\n");
 
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie).size(), is(3));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 0).size(), is(3));
 
         String backup = front.Movies();
         front.displayMenu();
@@ -422,9 +422,9 @@ public class FrontEndTest {
                 FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
                 FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
                 FrontEnd2.menu() + FrontEnd2.returnContent(Item.TYPES.Movie) + FrontEnd2.returnSuccessContent(Item.TYPES.Movie) +
-                FrontEnd2.menu() + front.Movies() +
+                FrontEnd2.menu() + front.unAvailable(Item.TYPES.Movie) +
                 FrontEnd2.menu() + FrontEnd2.quit());
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie).size(), is(2));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 0).size(), is(2));
     }
 
     @Ignore
@@ -456,9 +456,25 @@ public class FrontEndTest {
         front.displayMenu();
 
         assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Book) +
-                FrontEnd2.menu() + front.available(Item.TYPES.Book) +
+                FrontEnd2.menu() + front.unAvailable(Item.TYPES.Book) +
                 FrontEnd2.menu() + FrontEnd2.quit());
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book).size(), is (3));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book, 1).size(), is (1));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book, 0).size(), is (3));
+    }
+
+    @Test
+    public void should_list_rented_movies() throws Exception {
+        addItems(itemManager);
+        FrontEnd2 front = new FrontEnd2(itemManager);
+
+        consoleInput("6\n6\n8\n0\n" );
+        front.displayMenu();
+
+        assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
+                FrontEnd2.menu() + front.unAvailable(Item.TYPES.Movie) +
+                FrontEnd2.menu() + FrontEnd2.quit());
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 1).size(), is (1));
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 0).size(), is (2));
     }
 
 

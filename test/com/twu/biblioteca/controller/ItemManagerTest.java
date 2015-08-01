@@ -25,13 +25,13 @@ public class ItemManagerTest {
     public void should_return_Typed_List() throws Exception {
         ItemManager itemManager = createList();
 
-        ArrayList<Item> books = itemManager.getAvailableItemListByType(Item.TYPES.Book);
+        ArrayList<Item> books = itemManager.getAvailableItemListByType(Item.TYPES.Book, 0);
 
         assertThat(books.size(), is(2));
 
         itemManager.add(new Book("book3", "ba3", 1999));
 
-        ArrayList<Item> books2 = itemManager.getAvailableItemListByType(Item.TYPES.Book);
+        ArrayList<Item> books2 = itemManager.getAvailableItemListByType(Item.TYPES.Book, 0);
 
         assertThat(books2.size(), is(3));
 

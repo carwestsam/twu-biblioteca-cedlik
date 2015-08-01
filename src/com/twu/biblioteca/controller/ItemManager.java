@@ -21,10 +21,10 @@ public class ItemManager {
         return itemList;
     }
 
-    public ArrayList<Item> getAvailableItemListByType(Item.TYPES itemType) {
+    public ArrayList<Item> getAvailableItemListByType(Item.TYPES itemType, int available) {
         ArrayList<Item> items = new ArrayList<>();
         for (Item item : itemList) {
-            if (itemType == item.getType() && item.getCheckout() == 0) {
+            if (itemType == item.getType() && item.getCheckout() == available) {
                 items.add(item);
             }
         }
