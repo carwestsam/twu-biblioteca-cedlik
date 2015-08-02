@@ -34,6 +34,7 @@ public class UserConsoleTest {
     private String welcomeContent;
     private ItemManager itemManager;
     private Library library;
+    private UserManager userManager;
 
     @Before
     public void setUpStreams(){
@@ -266,8 +267,11 @@ public class UserConsoleTest {
 
     private UserConsole initFront() {
         addItems(itemManager);
-        library = new Library(new UserManager(), itemManager);
-        return new UserConsole(library, new Scanner(System.in), new User("user1", "123456", 1, "123@g.com", "13912345678"));
+        userManager = new UserManager();
+        User user1 = new User("user1", "123456", 1, "123@g.com", "13912345678");
+        userManager.add(user1);
+        library = new Library(userManager, itemManager);
+        return new UserConsole(library, new Scanner(System.in), user1);
     }
 
 
@@ -435,7 +439,6 @@ public class UserConsoleTest {
                 UserConsole.menu() + UserConsole.returnContent(Item.TYPES.Movie) + UserConsole.returnSuccessContent(Item.TYPES.Movie) +
                 UserConsole.menu() + front.toTableString(Item.TYPES.Movie, front.getRentedList(Item.TYPES.Movie)) +
                 UserConsole.menu() + UserConsole.quit());
-        //assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 0).size(), is(2));
         assertThat(front.getRentedList(Item.TYPES.Movie).size(), is(1));
     }
 
@@ -469,5 +472,16 @@ public class UserConsoleTest {
                 UserConsole.menu() + UserConsole.quit());
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 1).size(), is (1));
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 0).size(), is (2));
+    }
+
+    @Test
+    public void should_quit_will_error_input_return() throws Exception {
+        UserConsole front = createFrontWithInput("7\n5\n0\n0\n");
+        front.displayMenu();
+
+        assertEquals(outContent.toString(),
+                UserConsole.menu() + UserConsole.returnContent(Item.TYPES.Movie) + front.returnFailedContent(Item.TYPES.Movie) +
+                UserConsole.returnContent(Item.TYPES.Movie) +
+                UserConsole.menu() + UserConsole.quit());
     }
 }

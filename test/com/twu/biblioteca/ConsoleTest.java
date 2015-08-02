@@ -169,6 +169,5 @@ public class ConsoleTest {
         assertThat(userConsole1.getRentedList(Item.TYPES.Movie).size(), is(0));
         assertThat(userConsole2.getRentedList(Item.TYPES.Book).size(), is(1));
         assertThat(userConsole2.getRentedList(Item.TYPES.Movie).size(), is(0));
-
     }
 }

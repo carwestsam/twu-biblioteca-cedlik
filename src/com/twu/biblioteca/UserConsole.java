@@ -123,6 +123,9 @@ public class UserConsole {
             display(returnContent(itemType));
 
             int instr = scanner.nextInt();
+            if ( instr == 0 ){
+                return ;
+            }
 
             int statu = handback(instr, itemType);
 
@@ -140,8 +143,7 @@ public class UserConsole {
 
     public int handback(int id, Item.TYPES itemType) {
         Item item = library.getItemManager().getItemByIdAndType(id, itemType);
-        if ( item != null ){
-            library.unCheckout(user, item);
+        if ( item != null && library.unCheckout(user, item) ){
             return 0;
         }else {
             return 1;
@@ -149,7 +151,7 @@ public class UserConsole {
     }
 
 
-    private String returnFailedContent(Item.TYPES itemType) {
+    public String returnFailedContent(Item.TYPES itemType) {
         return getContent("returnFailedContent", itemType);
     }
 
@@ -173,8 +175,7 @@ public class UserConsole {
 
     public int checkout( int itemId, Item.TYPES itemType ){
         Item item = library.getItemManager().getItemByIdAndType(itemId, itemType);
-        if ( item != null  ){
-            library.checkout(user, item);
+        if ( item != null && library.checkout(user, item) ){
             return 0;
         }else {
             return 1;
