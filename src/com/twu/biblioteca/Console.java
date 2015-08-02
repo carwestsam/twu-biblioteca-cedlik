@@ -6,6 +6,7 @@ import com.twu.biblioteca.model.Item;
 import com.twu.biblioteca.model.User;
 import com.twu.biblioteca.service.Library;
 import com.twu.biblioteca.service.Table;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +55,8 @@ public class Console {
     public static String menu() {
         return  "[1]\tLogin \n" +
                 "[2]\tLogin as root\n" +
-                "[0]\tQuit \n";
+                "[0]\tQuit \n" +
+                "Input the Instruction number:\n";
     }
 
     public void start() {
@@ -118,15 +120,50 @@ public class Console {
     }
 
     public String rootInform() {
-        ArrayList<Item> itemListByType = library.getItemManager().getItemListByTypeAndCheckout(Item.TYPES.Book, 1);
+//        ArrayList<Item> itemListByType = library.getItemManager().getItemListByTypeAndCheckout(Item.TYPES.Book, 1);
+//
+//
+//        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
+//        for ( Item item : itemListByType ){
+//            mapList.add(item.getHashMap());
+//        }
+//
+//        return (new Table(library.getItemManager().getHeaderListByType(Item.TYPES.Book), mapList)).Serial();
 
-        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
-        for ( Item item : itemListByType ){
-            mapList.add(item.getHashMap());
+        ArrayList<Pair<Item,String>> items;
+        items = library.getRentedItems(Item.TYPES.Book);
+        ArrayList<HashMap<String, String>> list = new ArrayList<>();
+
+        for (Pair<Item, String> item1 : items) {
+            Item item = item1.getKey();
+            String userName = item1.getValue();
+            HashMap<String, String> hashMap = item.getHashMap();
+            hashMap.put("user", userName);
+            list.add(hashMap);
         }
 
-        return (new Table(library.getItemManager().getHeaderListByType(Item.TYPES.Book), mapList)).Serial();
+        ArrayList<String> header = library.getItemManager().getHeaderListByType(Item.TYPES.Book);
+        header.add("user");
 
+        String ans = "\nBooks\n" ;
+        ans += (new Table(header, list)).Serial();
+
+        items = library.getRentedItems(Item.TYPES.Movie);
+        list = new ArrayList<>();
+
+        for (Pair<Item, String> item1 : items) {
+            Item item = item1.getKey();
+            String userName = item1.getValue();
+            HashMap<String, String> hashMap = item.getHashMap();
+            hashMap.put("user", userName);
+            list.add(hashMap);
+        }
+
+        header = library.getItemManager().getHeaderListByType(Item.TYPES.Movie);
+        header.add("user");
+        ans += "\nMovies\n" + (new Table(header, list)).Serial();
+
+        return ans;
     }
 
     public static String loginFailedContent(int userType) {

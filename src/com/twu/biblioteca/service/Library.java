@@ -4,6 +4,7 @@ import com.twu.biblioteca.controller.ItemManager;
 import com.twu.biblioteca.controller.UserManager;
 import com.twu.biblioteca.model.Item;
 import com.twu.biblioteca.model.User;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -80,5 +81,18 @@ public class Library {
 
     public ItemManager getItemManager() {
         return itemManager;
+    }
+
+    public ArrayList<Pair<Item, String>> getRentedItems(Item.TYPES itemType) {
+        ArrayList<Pair<Item, String>> list = new ArrayList<>();
+        for ( Integer id : relation.keySet() ){
+            String userName = relation.get(id);
+
+            Item item = getItemManager().getItemByIdAndType(id, itemType);
+            if ( item != null ) {
+                list.add(new Pair<Item, String>(item, userName));
+            }
+        }
+        return list;
     }
 }
