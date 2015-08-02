@@ -484,4 +484,12 @@ public class UserConsoleTest {
                 UserConsole.returnContent(Item.TYPES.Movie) +
                 UserConsole.menu() + UserConsole.quit());
     }
+
+    @Test
+    public void should_display_user_inform() throws Exception {
+        UserConsole front = createFrontWithInput("9\n0\n");
+        front.displayMenu();
+
+        assertEquals(outContent.toString(), UserConsole.menu() + front.userInfo() + UserConsole.menu() + UserConsole.quit());
+    }
 }

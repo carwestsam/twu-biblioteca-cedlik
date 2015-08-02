@@ -108,6 +108,9 @@ public class UserConsole {
                     display(toTableString(Item.TYPES.Movie, getRentedList(Item.TYPES.Movie)));
                     //display(available(Item.TYPES.Movie, 1));
                     break;
+                case 9:
+                    display(userInfo());
+                    break;
                 case 0:
                     display(quit());
                     return;
@@ -160,6 +163,10 @@ public class UserConsole {
             display(checkoutContent(itemType));
             int instr = scanner.nextInt();
 
+            if (instr == 0){
+                break;
+            }
+
             int statu = checkout( instr, itemType);
 
             if ( 0 == statu ){
@@ -193,6 +200,7 @@ public class UserConsole {
                 "[6]Checkout Movie\n" +
                 "[7]Return Movie\n" +
                 "[8]List all borrowed Movies\n" +
+                "[9]Display User Info\n" +
                 "[0]quit\n" +
                 "Please input the instruction number:\n";
         return menu;
@@ -284,4 +292,7 @@ public class UserConsole {
     }
 
 
+    public String userInfo() {
+        return "---\nUser:\t" + user.getUserName() +"\nEmail:\t" + user.getEmail() + "\nPhone:\t" + user.getPhone() + "\n\n";
+    }
 }
