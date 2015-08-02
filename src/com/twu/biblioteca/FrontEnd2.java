@@ -2,6 +2,7 @@ package com.twu.biblioteca;
 
 import com.twu.biblioteca.controller.ItemManager;
 import com.twu.biblioteca.model.Item;
+import com.twu.biblioteca.model.User;
 import com.twu.biblioteca.service.Table;
 
 import java.util.ArrayList;
@@ -15,10 +16,13 @@ import java.util.Scanner;
 public class FrontEnd2 {
 
     private final ItemManager itemManager;
+    private final User user;
     private Scanner scanner;
 
-    public FrontEnd2(ItemManager itemManager) {
+    public FrontEnd2(ItemManager itemManager, User user, Scanner scanner) {
         this.itemManager = itemManager;
+        this.user = user;
+        this.scanner = scanner;
     }
 
     public String welcome() {
@@ -55,7 +59,7 @@ public class FrontEnd2 {
     }
 
     public void displayMenu() {
-        scanner = new Scanner(System.in);
+        //scanner = new Scanner(System.in);
         while ( true ){
             display(menu());
             int instr = scanner.nextInt();

@@ -1,11 +1,10 @@
 package com.twu.biblioteca;
 
-import com.twu.biblioteca.controller.BookManager;
 import com.twu.biblioteca.controller.ItemManager;
 import com.twu.biblioteca.model.Book;
 import com.twu.biblioteca.model.Item;
 import com.twu.biblioteca.model.Movie;
-import jdk.nashorn.internal.ir.annotations.Ignore;
+import com.twu.biblioteca.model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +12,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Scanner;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
@@ -258,7 +258,7 @@ public class FrontEndTest {
         System.setIn(input);
     }
 
-    private void addItems(ItemManager itemManager) {
+    public static void addItems(ItemManager itemManager) {
         itemManager.add(new Book("a", "aa", 1992));
         itemManager.add(new Book("b", "bb", 1993));
         itemManager.add(new Movie("A", 1931, "AA", 5));
@@ -270,38 +270,48 @@ public class FrontEndTest {
 
     private FrontEnd2 initFront() {
         addItems(itemManager);
-        return new FrontEnd2(itemManager);
+        return new FrontEnd2(itemManager, new User("user1", "123456", 1, "123@g.com", "13912345678"), new Scanner(System.in));
     }
 
 
     @Test
     public void should_Welcome2() throws Exception {
-        FrontEnd2 frontEnd2 = new FrontEnd2(new ItemManager());
-
+        FrontEnd2 frontEnd2 = initFront();
         frontEnd2.display(frontEnd2.welcome());
         assertEquals(welcomeContent, outContent.toString());
     }
 
     @Test
     public void should_print_menu_inform2() throws Exception {
-        FrontEnd2 frontEnd2 = new FrontEnd2(new ItemManager());
         consoleInput("0\n");
+        FrontEnd2 frontEnd2 = initFront();
         frontEnd2.displayMenu();
         assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.quit());
     }
 
     @Test
+    public void should_list_books2() throws Exception {
+        ItemManager itemManager = new ItemManager();
+        itemManager.add(new Book("CPP", "Stanley", 1984));
+        itemManager.add(new Book("python", "Monty", 1996));
+        FrontEnd2 frontEnd2 = new FrontEnd2(itemManager, new User("user1", "123456", 1, "123@g.com", "13912345678"), new Scanner(System.in));
+
+        frontEnd2.displayBooks();
+        assertEquals(outContent.toString(), "id\ttitle\tauthor\tyear\t\n1\tCPP\tStanley\t1984\t\n2\tpython\tMonty\t1996\t\n");
+    }
+
+    @Test
     public void should_display_Book_List() throws Exception {
-        FrontEnd2 frontEnd2 = initFront();
         consoleInput("1\n0\n");
+        FrontEnd2 frontEnd2 = initFront();
         frontEnd2.displayMenu();
         assertEquals(outContent.toString(), FrontEnd2.menu() + frontEnd2.Books() + FrontEnd2.menu() + FrontEnd2.quit());
     }
 
     @Test
     public void should_list_Available_Movies() throws Exception {
-        FrontEnd2 front = initFront();
         consoleInput("5\n0\n");
+        FrontEnd2 front = initFront();
         front.displayMenu();
         assertEquals(outContent.toString(), FrontEnd2.menu() + front.Movies() + FrontEnd2.menu() + FrontEnd2.quit());
         assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 0).size(), is(3));
@@ -309,17 +319,17 @@ public class FrontEndTest {
 
     @Test
     public void should_display_invalid_instruction() throws Exception {
-        FrontEnd2 frontEnd2 = initFront();
         consoleInput("100\n0\n");
+        FrontEnd2 frontEnd2 = initFront();
         frontEnd2.displayMenu();
         assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.invalid() + FrontEnd2.menu() + FrontEnd2.quit());
     }
 
     @Test
     public void should_loop_the_menu() throws Exception {
-        FrontEnd2 frontEnd2 = initFront();
-
         consoleInput("1\n11\n0\n");
+
+        FrontEnd2 frontEnd2 = initFront();
 
         frontEnd2.displayMenu();
 
@@ -331,11 +341,12 @@ public class FrontEndTest {
 
     @Test
     public void should_check_out_a_book() throws Exception {
+        consoleInput("1\n2\n1\n1\n0\n");
+
         FrontEnd2 frontEnd2 = initFront();
 
         String backupBooks = frontEnd2.Books();
 
-        consoleInput("1\n2\n1\n1\n0\n");
         frontEnd2.displayMenu();
         assertEquals(outContent.toString(),
                 FrontEnd2.menu() + backupBooks +
@@ -347,12 +358,13 @@ public class FrontEndTest {
 
     @Test
     public void should_check_out_a_movie() throws Exception {
+        consoleInput("5\n6\n2\n3\n5\n0\n");
+
         FrontEnd2 front = initFront();
 
         String backupMovies = front.Movies();
 
         //checkout success one movie
-        consoleInput("5\n6\n2\n3\n5\n0\n");
         front.displayMenu();
 
         assertEquals(outContent.toString(),
@@ -368,11 +380,13 @@ public class FrontEndTest {
 
     @Test
     public void should_check_out_a_book_failed() throws Exception {
+
+        consoleInput("1\n2\n3\n1\n1\n0\n");
+
         FrontEnd2 frontEnd2 = initFront();
 
         String backupBooks = frontEnd2.Books();
 
-        consoleInput("1\n2\n3\n1\n1\n0\n");
         frontEnd2.displayMenu();
         assertEquals(outContent.toString(),
                 FrontEnd2.menu() + backupBooks +
@@ -387,9 +401,10 @@ public class FrontEndTest {
     @Test
     public void should_return_books() throws Exception {
 
+        consoleInput("1\n2\n1\n2\n4\n3\n4\n1\n0\n");
+
         FrontEnd2 front = initFront();
 
-        consoleInput("1\n2\n1\n2\n4\n3\n4\n1\n0\n");
 
         assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book, 0).size(), is(4));
 
@@ -405,11 +420,11 @@ public class FrontEndTest {
         assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book, 0).size(), is(3));
     }
 
+
+
     @Test
     public void should_return_movies() throws Exception {
-        FrontEnd2 front = initFront();
-
-        consoleInput("5\n6\n5\n6\n6\n7\n6\n8\n0\n");
+        FrontEnd2 front = createFrontWithInput("5\n6\n5\n6\n6\n7\n6\n8\n0\n");
 
         assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 0).size(), is(3));
 
@@ -425,12 +440,16 @@ public class FrontEndTest {
         assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 0).size(), is(2));
     }
 
+    private FrontEnd2 createFrontWithInput(String input) {
+        consoleInput(input);
+        return initFront();
+    }
+
 
     @Test
     public void should_list_rented_books() throws Exception {
-        FrontEnd2 front = initFront();
+        FrontEnd2 front = createFrontWithInput("2\n2\n4\n0\n");
 
-        consoleInput("2\n2\n4\n0\n" );
         front.displayMenu();
 
         assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Book) +
@@ -443,9 +462,7 @@ public class FrontEndTest {
 
     @Test
     public void should_list_rented_movies() throws Exception {
-        FrontEnd2 front = initFront();
-
-        consoleInput("6\n6\n8\n0\n" );
+        FrontEnd2 front = createFrontWithInput( "6\n6\n8\n0\n" );
         front.displayMenu();
 
         assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
@@ -455,16 +472,6 @@ public class FrontEndTest {
         assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Movie, 0).size(), is (2));
     }
 
-    @Test
-    public void should_list_books2() throws Exception {
-        ItemManager itemManager = new ItemManager();
-        itemManager.add(new Book("CPP", "Stanley", 1984));
-        itemManager.add(new Book("python", "Monty", 1996));
-        FrontEnd2 frontEnd2 = new FrontEnd2(itemManager);
-
-        frontEnd2.displayBooks();
-        assertEquals(outContent.toString(), "id\ttitle\tauthor\tyear\t\n1\tCPP\tStanley\t1984\t\n2\tpython\tMonty\t1996\t\n");
-    }
 
 
 }
