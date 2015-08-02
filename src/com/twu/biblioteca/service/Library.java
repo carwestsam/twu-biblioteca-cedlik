@@ -49,7 +49,7 @@ public class Library {
         ArrayList<Item> items = new ArrayList<>();
         for ( Integer id : relation.keySet() ){
             String tmp = relation.get(id);
-            if ( tmp.compareTo(userName) == 0){
+            if ( tmp.compareTo(userName) == 0 && itemManager.getItemByIdAndType(id, itemType) != null){
                 items.add(itemManager.getItemByIdAndType(id, itemType));
             }
         }

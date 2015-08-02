@@ -14,7 +14,7 @@ import java.util.Scanner;
 /**
  * Created by carwest on 15-7-31.
  */
-public class FrontEnd2 {
+public class UserConsole {
 
     //private final ItemManager itemManager;
 
@@ -22,7 +22,7 @@ public class FrontEnd2 {
     private final Library library;
     private Scanner scanner;
 
-    public FrontEnd2(Library library, Scanner scanner, User user) {
+    public UserConsole(Library library, Scanner scanner, User user) {
         //this.itemManager = libarayitemManager;
         this.library = library;
         this.user = user;
@@ -55,8 +55,21 @@ public class FrontEnd2 {
 
     public String available(Item.TYPES itemType, int available) {
         ArrayList<Item> itemListByType = library.getItemManager().getItemListByTypeAndCheckout(itemType, available);
+        return toTableString(itemType, itemListByType);
+//        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
+//        for ( Item item : itemListByType ){
+//            mapList.add(item.getHashMap());
+//        }
+//        return (new Table(library.getItemManager().getHeaderListByType(itemType), mapList)).Serial();
+    }
+
+    public ArrayList<Item> getRentedList(Item.TYPES itemType){
+        return library.getRentListByUserNameAndItemType(user.getUserName(), itemType);
+    }
+
+    public String toTableString(Item.TYPES itemType,  ArrayList<Item> itemList){
         ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
-        for ( Item item : itemListByType ){
+        for ( Item item : itemList){
             mapList.add(item.getHashMap());
         }
         return (new Table(library.getItemManager().getHeaderListByType(itemType), mapList)).Serial();
@@ -79,7 +92,8 @@ public class FrontEnd2 {
                     displayReturn(Item.TYPES.Book);
                     break;
                 case 4:
-                    display(available(Item.TYPES.Book, 1));
+                    display(toTableString(Item.TYPES.Book, getRentedList(Item.TYPES.Book)));
+                    //display(available(Item.TYPES.Book, 1));
                     break;
                 case 5:
                     display(Movies());
@@ -91,7 +105,8 @@ public class FrontEnd2 {
                     displayReturn(Item.TYPES.Movie);
                     break;
                 case 8:
-                    display(available(Item.TYPES.Movie, 1));
+                    display(toTableString(Item.TYPES.Movie, getRentedList(Item.TYPES.Movie)));
+                    //display(available(Item.TYPES.Movie, 1));
                     break;
                 case 0:
                     display(quit());
@@ -109,7 +124,7 @@ public class FrontEnd2 {
 
             int instr = scanner.nextInt();
 
-            int statu = library.getItemManager().returnItemById(instr, itemType);
+            int statu = handback(instr, itemType);
 
             if ( 0 == statu ){
                 display(returnSuccessContent(itemType));
@@ -122,6 +137,18 @@ public class FrontEnd2 {
         }
     }
 
+
+    public int handback(int id, Item.TYPES itemType) {
+        Item item = library.getItemManager().getItemByIdAndType(id, itemType);
+        if ( item != null ){
+            library.unCheckout(user, item);
+            return 0;
+        }else {
+            return 1;
+        }
+    }
+
+
     private String returnFailedContent(Item.TYPES itemType) {
         return getContent("returnFailedContent", itemType);
     }
@@ -131,7 +158,7 @@ public class FrontEnd2 {
             display(checkoutContent(itemType));
             int instr = scanner.nextInt();
 
-            int statu = library.getItemManager().checkoutById(instr, itemType);
+            int statu = checkout( instr, itemType);
 
             if ( 0 == statu ){
                 display(checkoutSuccessContent(itemType));
@@ -143,6 +170,18 @@ public class FrontEnd2 {
             }
         }
     }
+
+    public int checkout( int itemId, Item.TYPES itemType ){
+        Item item = library.getItemManager().getItemByIdAndType(itemId, itemType);
+        if ( item != null  ){
+            library.checkout(user, item);
+            return 0;
+        }else {
+            return 1;
+        }
+    }
+
+
     public static String menu() {
         String menu = "\n---\n\n" +
                 "[1]List all the books\n" +
@@ -242,5 +281,6 @@ public class FrontEnd2 {
         contents.put(Item.TYPES.DEF, "return item failed\n");
         return contents;
     }
+
 
 }

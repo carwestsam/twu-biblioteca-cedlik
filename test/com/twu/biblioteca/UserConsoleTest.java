@@ -19,7 +19,7 @@ import java.util.Scanner;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class FrontEndTest {
+public class UserConsoleTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private String menuContent;
@@ -33,6 +33,7 @@ public class FrontEndTest {
     private String returnFailedContent;
     private String welcomeContent;
     private ItemManager itemManager;
+    private Library library;
 
     @Before
     public void setUpStreams(){
@@ -66,9 +67,6 @@ public class FrontEndTest {
 //        front.displayWelcome();
 //        assertEquals(welcomeContent, outContent.toString());
 //    }
-
-
-
 //    @Ignore
 //    @Test
 //    public void should_list_books() throws Exception {
@@ -85,8 +83,6 @@ public class FrontEndTest {
 //        front.listBooks();
 //        assertEquals(outContent.toString(), "1\tC++\n2\tpython\n");
 //    }
-
-
 //    @Ignore
 //    @Test
 //    public void should_get_detailed_books() throws Exception {
@@ -174,7 +170,6 @@ public class FrontEndTest {
 //        frontEnd.displayMenu();
 //        assertEquals(outContent.toString(), menuContent + backupList + menuContent + checkoutContent + checkoutSuccessContent + menuContent + quitContent);
 //    }
-
 //    @Ignore
 //    @Test
 //    public void should_check_out_a_book_fail() throws Exception {
@@ -197,7 +192,6 @@ public class FrontEndTest {
 //                menuContent + quitContent);
 //
 //    }
-
 //    @Ignore
 //    @Test
 //    public void should_check_out_book() throws Exception {
@@ -235,7 +229,6 @@ public class FrontEndTest {
 //                menuContent + "idx\ttitle\tauthor\tyear\n1\tc\t3\t1993\n2\tb\t2\t1992\n3\ta\t1\t1991\n" +
 //                menuContent + quitContent);
 //    }
-
 //    @Ignore
 //    @Test
 //    public void should_list_borrowed_books() throws Exception {
@@ -255,6 +248,7 @@ public class FrontEndTest {
 //                menuContent + "idx\ttitle\tauthor\tyear\n1\tb\t2\t1992\n" +
 //                menuContent + quitContent);
 //    }
+
     private void consoleInput(String instruction){
         ByteArrayInputStream input = new ByteArrayInputStream(instruction.getBytes());
         System.setIn(input);
@@ -270,25 +264,26 @@ public class FrontEndTest {
         itemManager.add(new Book("d", "dd", 1995));
     }
 
-    private FrontEnd2 initFront() {
+    private UserConsole initFront() {
         addItems(itemManager);
-        return new FrontEnd2(new Library(new UserManager(), itemManager), new Scanner(System.in), new User("user1", "123456", 1, "123@g.com", "13912345678"));
+        library = new Library(new UserManager(), itemManager);
+        return new UserConsole(library, new Scanner(System.in), new User("user1", "123456", 1, "123@g.com", "13912345678"));
     }
 
 
     @Test
     public void should_Welcome2() throws Exception {
-        FrontEnd2 frontEnd2 = initFront();
-        frontEnd2.display(frontEnd2.welcome());
+        UserConsole userConsole = initFront();
+        userConsole.display(userConsole.welcome());
         assertEquals(welcomeContent, outContent.toString());
     }
 
     @Test
     public void should_print_menu_inform2() throws Exception {
         consoleInput("0\n");
-        FrontEnd2 frontEnd2 = initFront();
-        frontEnd2.displayMenu();
-        assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.quit());
+        UserConsole userConsole = initFront();
+        userConsole.displayMenu();
+        assertEquals(outContent.toString(), UserConsole.menu() + UserConsole.quit());
     }
 
     @Test
@@ -296,65 +291,66 @@ public class FrontEndTest {
         ItemManager itemManager = new ItemManager();
         itemManager.add(new Book("CPP", "Stanley", 1984));
         itemManager.add(new Book("python", "Monty", 1996));
-        FrontEnd2 frontEnd2 = new FrontEnd2(new Library(new UserManager(), itemManager), new Scanner(System.in), new User("user1", "123456", 1, "123@g.com", "13912345678"));
+        UserConsole userConsole = new UserConsole(new Library(new UserManager(), itemManager), new Scanner(System.in), new User("user1", "123456", 1, "123@g.com", "13912345678"));
 
-        frontEnd2.displayBooks();
+        userConsole.displayBooks();
         assertEquals(outContent.toString(), "id\ttitle\tauthor\tyear\t\n1\tCPP\tStanley\t1984\t\n2\tpython\tMonty\t1996\t\n");
     }
 
     @Test
     public void should_display_Book_List() throws Exception {
         consoleInput("1\n0\n");
-        FrontEnd2 frontEnd2 = initFront();
-        frontEnd2.displayMenu();
-        assertEquals(outContent.toString(), FrontEnd2.menu() + frontEnd2.Books() + FrontEnd2.menu() + FrontEnd2.quit());
+        UserConsole userConsole = initFront();
+        userConsole.displayMenu();
+        assertEquals(outContent.toString(), UserConsole.menu() + userConsole.Books() + UserConsole.menu() + UserConsole.quit());
+        assertThat(library.getItemManager().getItemListByTypeAndCheckout(Item.TYPES.Book, 0).size(), is(4));
     }
 
     @Test
     public void should_list_Available_Movies() throws Exception {
         consoleInput("5\n0\n");
-        FrontEnd2 front = initFront();
+        UserConsole front = initFront();
         front.displayMenu();
-        assertEquals(outContent.toString(), FrontEnd2.menu() + front.Movies() + FrontEnd2.menu() + FrontEnd2.quit());
+        assertEquals(outContent.toString(), UserConsole.menu() + front.Movies() + UserConsole.menu() + UserConsole.quit());
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 0).size(), is(3));
     }
 
     @Test
     public void should_display_invalid_instruction() throws Exception {
         consoleInput("100\n0\n");
-        FrontEnd2 frontEnd2 = initFront();
-        frontEnd2.displayMenu();
-        assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.invalid() + FrontEnd2.menu() + FrontEnd2.quit());
+        UserConsole userConsole = initFront();
+        userConsole.displayMenu();
+        assertEquals(outContent.toString(), UserConsole.menu() + UserConsole.invalid() + UserConsole.menu() + UserConsole.quit());
     }
 
     @Test
     public void should_loop_the_menu() throws Exception {
         consoleInput("1\n11\n0\n");
 
-        FrontEnd2 frontEnd2 = initFront();
+        UserConsole userConsole = initFront();
 
-        frontEnd2.displayMenu();
+        userConsole.displayMenu();
 
         assertEquals(outContent.toString(),
-                FrontEnd2.menu() + frontEnd2.Books() +
-                FrontEnd2.menu() + FrontEnd2.invalid() +
-                FrontEnd2.menu() + FrontEnd2.quit());
+                UserConsole.menu() + userConsole.Books() +
+                UserConsole.menu() + UserConsole.invalid() +
+                UserConsole.menu() + UserConsole.quit());
     }
 
     @Test
     public void should_check_out_a_book() throws Exception {
         consoleInput("1\n2\n1\n1\n0\n");
 
-        FrontEnd2 frontEnd2 = initFront();
+        UserConsole userConsole = initFront();
 
-        String backupBooks = frontEnd2.Books();
+        String backupBooks = userConsole.Books();
 
-        frontEnd2.displayMenu();
+        userConsole.displayMenu();
         assertEquals(outContent.toString(),
-                FrontEnd2.menu() + backupBooks +
-                FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Book) +
-                FrontEnd2.menu() + frontEnd2.Books() +
-                FrontEnd2.menu() + FrontEnd2.quit());
+                UserConsole.menu() + backupBooks +
+                UserConsole.menu() + UserConsole.checkoutContent(Item.TYPES.Book) + UserConsole.checkoutSuccessContent(Item.TYPES.Book) +
+                UserConsole.menu() + userConsole.Books() +
+                UserConsole.menu() + UserConsole.quit());
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Book, 0).size(), is(3));
     }
 
@@ -362,7 +358,7 @@ public class FrontEndTest {
     public void should_check_out_a_movie() throws Exception {
         consoleInput("5\n6\n2\n3\n5\n0\n");
 
-        FrontEnd2 front = initFront();
+        UserConsole front = initFront();
 
         String backupMovies = front.Movies();
 
@@ -370,11 +366,11 @@ public class FrontEndTest {
         front.displayMenu();
 
         assertEquals(outContent.toString(),
-                FrontEnd2.menu() + backupMovies +
-                FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutFailedContent(Item.TYPES.Movie) +
-                FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
-                FrontEnd2.menu() + front.Movies() +
-                FrontEnd2.menu() + FrontEnd2.quit());
+                UserConsole.menu() + backupMovies +
+                UserConsole.menu() + UserConsole.checkoutContent(Item.TYPES.Movie) + UserConsole.checkoutFailedContent(Item.TYPES.Movie) +
+                UserConsole.checkoutContent(Item.TYPES.Movie) + UserConsole.checkoutSuccessContent(Item.TYPES.Movie) +
+                UserConsole.menu() + front.Movies() +
+                UserConsole.menu() + UserConsole.quit());
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 0).size(), is(2));
     }
 
@@ -385,17 +381,17 @@ public class FrontEndTest {
 
         consoleInput("1\n2\n3\n1\n1\n0\n");
 
-        FrontEnd2 frontEnd2 = initFront();
+        UserConsole userConsole = initFront();
 
-        String backupBooks = frontEnd2.Books();
+        String backupBooks = userConsole.Books();
 
-        frontEnd2.displayMenu();
+        userConsole.displayMenu();
         assertEquals(outContent.toString(),
-                FrontEnd2.menu() + backupBooks +
-                        FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutFailedContent(Item.TYPES.Book) +
-                        FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Book) +
-                        FrontEnd2.menu() + frontEnd2.Books() +
-                        FrontEnd2.menu() + FrontEnd2.quit());
+                UserConsole.menu() + backupBooks +
+                        UserConsole.menu() + UserConsole.checkoutContent(Item.TYPES.Book) + UserConsole.checkoutFailedContent(Item.TYPES.Book) +
+                        UserConsole.checkoutContent(Item.TYPES.Book) + UserConsole.checkoutSuccessContent(Item.TYPES.Book) +
+                        UserConsole.menu() + userConsole.Books() +
+                        UserConsole.menu() + UserConsole.quit());
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Book, 0).size(), is(3));
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 0).size(), is(3));
     }
@@ -405,7 +401,7 @@ public class FrontEndTest {
 
         consoleInput("1\n2\n1\n2\n4\n3\n4\n1\n0\n");
 
-        FrontEnd2 front = initFront();
+        UserConsole front = initFront();
 
 
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Book, 0).size(), is(4));
@@ -413,12 +409,12 @@ public class FrontEndTest {
         String backup = front.Books();
         front.displayMenu();
 
-        assertEquals(outContent.toString(), FrontEnd2.menu() + backup +
-                FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Book) +
-                FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Book) +
-                FrontEnd2.menu() + FrontEnd2.returnContent(Item.TYPES.Book) + FrontEnd2.returnSuccessContent(Item.TYPES.Book) +
-                FrontEnd2.menu() + front.Books() +
-                FrontEnd2.menu() + FrontEnd2.quit());
+        assertEquals(outContent.toString(), UserConsole.menu() + backup +
+                UserConsole.menu() + UserConsole.checkoutContent(Item.TYPES.Book) + UserConsole.checkoutSuccessContent(Item.TYPES.Book) +
+                UserConsole.menu() + UserConsole.checkoutContent(Item.TYPES.Book) + UserConsole.checkoutSuccessContent(Item.TYPES.Book) +
+                UserConsole.menu() + UserConsole.returnContent(Item.TYPES.Book) + UserConsole.returnSuccessContent(Item.TYPES.Book) +
+                UserConsole.menu() + front.Books() +
+                UserConsole.menu() + UserConsole.quit());
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Book, 0).size(), is(3));
     }
 
@@ -426,23 +422,24 @@ public class FrontEndTest {
 
     @Test
     public void should_return_movies() throws Exception {
-        FrontEnd2 front = createFrontWithInput("5\n6\n5\n6\n6\n7\n6\n8\n0\n");
+        UserConsole front = createFrontWithInput("5\n6\n5\n6\n6\n7\n6\n8\n0\n");
 
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 0).size(), is(3));
 
         String backup = front.Movies();
         front.displayMenu();
 
-        assertEquals(outContent.toString(), FrontEnd2.menu() + backup +
-                FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
-                FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
-                FrontEnd2.menu() + FrontEnd2.returnContent(Item.TYPES.Movie) + FrontEnd2.returnSuccessContent(Item.TYPES.Movie) +
-                FrontEnd2.menu() + front.unAvailable(Item.TYPES.Movie) +
-                FrontEnd2.menu() + FrontEnd2.quit());
-        assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 0).size(), is(2));
+        assertEquals(outContent.toString(), UserConsole.menu() + backup +
+                UserConsole.menu() + UserConsole.checkoutContent(Item.TYPES.Movie) + UserConsole.checkoutSuccessContent(Item.TYPES.Movie) +
+                UserConsole.menu() + UserConsole.checkoutContent(Item.TYPES.Movie) + UserConsole.checkoutSuccessContent(Item.TYPES.Movie) +
+                UserConsole.menu() + UserConsole.returnContent(Item.TYPES.Movie) + UserConsole.returnSuccessContent(Item.TYPES.Movie) +
+                UserConsole.menu() + front.toTableString(Item.TYPES.Movie, front.getRentedList(Item.TYPES.Movie)) +
+                UserConsole.menu() + UserConsole.quit());
+        //assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 0).size(), is(2));
+        assertThat(front.getRentedList(Item.TYPES.Movie).size(), is(1));
     }
 
-    private FrontEnd2 createFrontWithInput(String input) {
+    private UserConsole createFrontWithInput(String input) {
         consoleInput(input);
         return initFront();
     }
@@ -450,13 +447,13 @@ public class FrontEndTest {
 
     @Test
     public void should_list_rented_books() throws Exception {
-        FrontEnd2 front = createFrontWithInput("2\n2\n4\n0\n");
+        UserConsole front = createFrontWithInput("2\n2\n4\n0\n");
 
         front.displayMenu();
 
-        assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Book) +
-                FrontEnd2.menu() + front.unAvailable(Item.TYPES.Book) +
-                FrontEnd2.menu() + FrontEnd2.quit());
+        assertEquals(outContent.toString(), UserConsole.menu() + UserConsole.checkoutContent(Item.TYPES.Book) + UserConsole.checkoutSuccessContent(Item.TYPES.Book) +
+                UserConsole.menu() + front.unAvailable(Item.TYPES.Book) +
+                UserConsole.menu() + UserConsole.quit());
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Book, 1).size(), is (1));
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Book, 0).size(), is (3));
     }
@@ -464,12 +461,12 @@ public class FrontEndTest {
 
     @Test
     public void should_list_rented_movies() throws Exception {
-        FrontEnd2 front = createFrontWithInput("6\n6\n8\n0\n");
+        UserConsole front = createFrontWithInput("6\n6\n8\n0\n");
         front.displayMenu();
 
-        assertEquals(outContent.toString(), FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Movie) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Movie) +
-                FrontEnd2.menu() + front.unAvailable(Item.TYPES.Movie) +
-                FrontEnd2.menu() + FrontEnd2.quit());
+        assertEquals(outContent.toString(), UserConsole.menu() + UserConsole.checkoutContent(Item.TYPES.Movie) + UserConsole.checkoutSuccessContent(Item.TYPES.Movie) +
+                UserConsole.menu() + front.unAvailable(Item.TYPES.Movie) +
+                UserConsole.menu() + UserConsole.quit());
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 1).size(), is (1));
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 0).size(), is (2));
     }

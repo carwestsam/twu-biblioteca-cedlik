@@ -29,10 +29,18 @@ public class BibliotecaApp {
         itemManager.add(new Movie("Hugo", 2013, "Hugo", -1));
         itemManager.add(new Book ("Timer", "Hokin", 1997));
 
-        FrontEnd2 front = new FrontEnd2(new Library(new UserManager(), new ItemManager()), new Scanner(System.in), new User("user1", "123456", 1, "123@g.com", "13912345678"));
+        UserManager userManager = new UserManager();
+        userManager.add(new User("user1", "r123456", 1, "user1@gmail.com", "654456"));
+        userManager.add(new User("user2", "654321p", 1, "user2@gmail.com", "123321"));
 
-        front.display(front.welcome());
-        front.displayMenu();
+        //UserConsole front = new UserConsole(new Library(userManager, itemManager), new Scanner(System.in), new User("user1", "123456", 0, "123@g.com", "13912345678"));
+
+        //front.display(front.welcome());
+        //front.displayMenu();
+
+        Console console = new Console(new User("root", "123456", 0, "root@gmail.com", "123456"), new Library(userManager, itemManager));
+
+        console.start();
 
     }
 }
