@@ -83,4 +83,15 @@ public class ItemManager {
         }
         return null;
     }
+
+
+    public ArrayList<Item> getAvailableItemListByType(Item.TYPES itemType) {
+        ArrayList<Item> items = new ArrayList<>();
+        for ( Item item : itemList ) {
+            if ((item.getType() == itemType) && (item.getCheckout()==0) ){
+                items.add(item);
+            }
+        }
+        return items;
+    }
 }

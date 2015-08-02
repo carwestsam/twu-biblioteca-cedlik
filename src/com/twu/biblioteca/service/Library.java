@@ -6,7 +6,6 @@ import com.twu.biblioteca.model.Item;
 import com.twu.biblioteca.model.User;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 
 /**
@@ -69,5 +68,9 @@ public class Library {
         }else {
             return false;
         }
+    }
+
+    public ArrayList<Item> getListByItemType(Item.TYPES itemType) {
+        return itemManager.getAvailableItemListByType(itemType);
     }
 }

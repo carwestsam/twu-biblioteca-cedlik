@@ -72,5 +72,16 @@ public class LibraryTest {
         assertThat(rentItems.size(), is(1));
         assertThat(rentItems.get(0).getId() , is (4));
     }
+
+    @Test
+    public void should_get_checkable_list_with_Type() throws Exception {
+
+        ArrayList<Item> books = library.getListByItemType(Item.TYPES.Book);
+        ArrayList<Item> movies = library.getListByItemType(Item.TYPES.Movie);
+
+        assertThat(books.size(), is(4));
+        assertThat(movies.size() , is(3));
+    }
+    
 }
 
