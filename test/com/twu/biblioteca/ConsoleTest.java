@@ -57,7 +57,7 @@ public class ConsoleTest {
 
         library = new Library(userManager, itemManager);
 
-        userFront = new FrontEnd2(itemManager, new User("user1", "123456", 1, "123@g.com", "13912345678"), new Scanner(System.in));
+        userFront = new FrontEnd2(new Library(new UserManager(), new ItemManager()), new Scanner(System.in), new User("user1", "123456", 1, "123@g.com", "13912345678"));
 
         return new Console(root, library);
     }

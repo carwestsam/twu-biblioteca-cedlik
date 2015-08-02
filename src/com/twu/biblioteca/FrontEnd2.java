@@ -3,6 +3,7 @@ package com.twu.biblioteca;
 import com.twu.biblioteca.controller.ItemManager;
 import com.twu.biblioteca.model.Item;
 import com.twu.biblioteca.model.User;
+import com.twu.biblioteca.service.Library;
 import com.twu.biblioteca.service.Table;
 
 import java.util.ArrayList;
@@ -15,12 +16,15 @@ import java.util.Scanner;
  */
 public class FrontEnd2 {
 
-    private final ItemManager itemManager;
+    //private final ItemManager itemManager;
+
     private final User user;
+    private final Library library;
     private Scanner scanner;
 
-    public FrontEnd2(ItemManager itemManager, User user, Scanner scanner) {
-        this.itemManager = itemManager;
+    public FrontEnd2(Library library, Scanner scanner, User user) {
+        //this.itemManager = libarayitemManager;
+        this.library = library;
         this.user = user;
         this.scanner = scanner;
     }
@@ -50,12 +54,12 @@ public class FrontEnd2 {
     }
 
     public String available(Item.TYPES itemType, int available) {
-        ArrayList<Item> itemListByType = itemManager.getItemListByTypeAndCheckout(itemType, available);
+        ArrayList<Item> itemListByType = library.getItemManager().getItemListByTypeAndCheckout(itemType, available);
         ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
         for ( Item item : itemListByType ){
             mapList.add(item.getHashMap());
         }
-        return (new Table(itemManager.getHeaderListByType(itemType), mapList)).Serial();
+        return (new Table(library.getItemManager().getHeaderListByType(itemType), mapList)).Serial();
     }
 
     public void displayMenu() {
@@ -105,7 +109,7 @@ public class FrontEnd2 {
 
             int instr = scanner.nextInt();
 
-            int statu = itemManager.returnItemById(instr, itemType);
+            int statu = library.getItemManager().returnItemById(instr, itemType);
 
             if ( 0 == statu ){
                 display(returnSuccessContent(itemType));
@@ -127,7 +131,7 @@ public class FrontEnd2 {
             display(checkoutContent(itemType));
             int instr = scanner.nextInt();
 
-            int statu = itemManager.checkoutById(instr, itemType);
+            int statu = library.getItemManager().checkoutById(instr, itemType);
 
             if ( 0 == statu ){
                 display(checkoutSuccessContent(itemType));

@@ -88,7 +88,7 @@ public class Console {
 
         if ( library.getUserManager().checkLogin(userName, password) ){
             display(loginSuccessContent(1));
-            userFront = new FrontEnd2(library.getItemManager(), library.getUserManager().getUserByName(userName), scanner);
+            userFront = new FrontEnd2(new Library(new UserManager(), new ItemManager()), scanner, library.getUserManager().getUserByName(userName));
             userFront.displayMenu();
         }else {
             display(loginFailedContent(1));
@@ -110,7 +110,7 @@ public class Console {
 
         if ( root.checkPassword(pwd) ){
             display(loginSuccessContent(0));
-            userFront = new FrontEnd2(library.getItemManager(), root, new Scanner(System.in));
+            userFront = new FrontEnd2(new Library(new UserManager(), new ItemManager()), new Scanner(System.in), root);
             display(rootInform());
         }else {
             display(loginFailedContent(0));

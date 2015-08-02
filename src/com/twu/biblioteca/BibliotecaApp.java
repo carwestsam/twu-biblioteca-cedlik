@@ -1,9 +1,11 @@
 package com.twu.biblioteca;
 
 import com.twu.biblioteca.controller.ItemManager;
+import com.twu.biblioteca.controller.UserManager;
 import com.twu.biblioteca.model.Book;
 import com.twu.biblioteca.model.Movie;
 import com.twu.biblioteca.model.User;
+import com.twu.biblioteca.service.Library;
 
 import java.util.Scanner;
 
@@ -27,7 +29,7 @@ public class BibliotecaApp {
         itemManager.add(new Movie("Hugo", 2013, "Hugo", -1));
         itemManager.add(new Book ("Timer", "Hokin", 1997));
 
-        FrontEnd2 front = new FrontEnd2(itemManager, new User("user1", "123456", 1, "123@g.com", "13912345678"), new Scanner(System.in));
+        FrontEnd2 front = new FrontEnd2(new Library(new UserManager(), new ItemManager()), new Scanner(System.in), new User("user1", "123456", 1, "123@g.com", "13912345678"));
 
         front.display(front.welcome());
         front.displayMenu();

@@ -1,10 +1,12 @@
 package com.twu.biblioteca;
 
 import com.twu.biblioteca.controller.ItemManager;
+import com.twu.biblioteca.controller.UserManager;
 import com.twu.biblioteca.model.Book;
 import com.twu.biblioteca.model.Item;
 import com.twu.biblioteca.model.Movie;
 import com.twu.biblioteca.model.User;
+import com.twu.biblioteca.service.Library;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -270,7 +272,7 @@ public class FrontEndTest {
 
     private FrontEnd2 initFront() {
         addItems(itemManager);
-        return new FrontEnd2(itemManager, new User("user1", "123456", 1, "123@g.com", "13912345678"), new Scanner(System.in));
+        return new FrontEnd2(new Library(new UserManager(), itemManager), new Scanner(System.in), new User("user1", "123456", 1, "123@g.com", "13912345678"));
     }
 
 
@@ -294,7 +296,7 @@ public class FrontEndTest {
         ItemManager itemManager = new ItemManager();
         itemManager.add(new Book("CPP", "Stanley", 1984));
         itemManager.add(new Book("python", "Monty", 1996));
-        FrontEnd2 frontEnd2 = new FrontEnd2(itemManager, new User("user1", "123456", 1, "123@g.com", "13912345678"), new Scanner(System.in));
+        FrontEnd2 frontEnd2 = new FrontEnd2(new Library(new UserManager(), itemManager), new Scanner(System.in), new User("user1", "123456", 1, "123@g.com", "13912345678"));
 
         frontEnd2.displayBooks();
         assertEquals(outContent.toString(), "id\ttitle\tauthor\tyear\t\n1\tCPP\tStanley\t1984\t\n2\tpython\tMonty\t1996\t\n");
