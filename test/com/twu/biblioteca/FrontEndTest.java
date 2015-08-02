@@ -471,7 +471,4 @@ public class FrontEndTest {
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 1).size(), is (1));
         assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Movie, 0).size(), is (2));
     }
-
-
-
 }

@@ -4,6 +4,7 @@ import com.twu.biblioteca.controller.ItemManager;
 import com.twu.biblioteca.controller.UserManager;
 import com.twu.biblioteca.model.Item;
 import com.twu.biblioteca.model.User;
+import com.twu.biblioteca.service.Library;
 import com.twu.biblioteca.service.Table;
 
 import java.util.ArrayList;
@@ -15,16 +16,23 @@ import java.util.Scanner;
  */
 public class Console {
 
-    private final ItemManager itemManager;
+//    private ItemManager itemManager;
+//    private UserManager userManager;
 
     private Scanner scanner;
     private User root;
     private FrontEnd2 userFront;
-    private UserManager userManager;
-    public Console(User root, ItemManager itemManager, UserManager userManager) {
+    private Library library;
+
+//    public Console(User root, ItemManager itemManager, UserManager userManager) {
+//        this.root = root;
+//        this.itemManager = itemManager;
+//        this.userManager = userManager;
+//    }
+
+    public Console(User root, Library library) {
         this.root = root;
-        this.itemManager = itemManager;
-        this.userManager = userManager;
+        this.library = library;
     }
 
     public static String welcome() {
@@ -78,9 +86,9 @@ public class Console {
         displayPasswordContent(1);
         String password = scanner.next();
 
-        if ( userManager.checkLogin(userName, password) ){
+        if ( library.getUserManager().checkLogin(userName, password) ){
             display(loginSuccessContent(1));
-            userFront = new FrontEnd2(itemManager, userManager.getUserByName(userName), scanner);
+            userFront = new FrontEnd2(library.getItemManager(), library.getUserManager().getUserByName(userName), scanner);
             userFront.displayMenu();
         }else {
             display(loginFailedContent(1));
@@ -93,7 +101,6 @@ public class Console {
 
     public static  String userLoginContent() {
         return "Please Input User Name:\n";
-
     }
 
     public void rootLogin() {
@@ -103,7 +110,7 @@ public class Console {
 
         if ( root.checkPassword(pwd) ){
             display(loginSuccessContent(0));
-            userFront = new FrontEnd2(itemManager, root, new Scanner(System.in));
+            userFront = new FrontEnd2(library.getItemManager(), root, new Scanner(System.in));
             display(rootInform());
         }else {
             display(loginFailedContent(0));
@@ -111,14 +118,14 @@ public class Console {
     }
 
     public String rootInform() {
-        ArrayList<Item> itemListByType = itemManager.getItemListByTypeAndCheckout(Item.TYPES.Book, 1);
+        ArrayList<Item> itemListByType = library.getItemManager().getItemListByTypeAndCheckout(Item.TYPES.Book, 1);
 
         ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
         for ( Item item : itemListByType ){
             mapList.add(item.getHashMap());
         }
 
-        return (new Table(itemManager.getHeaderListByType(Item.TYPES.Book), mapList)).Serial();
+        return (new Table(library.getItemManager().getHeaderListByType(Item.TYPES.Book), mapList)).Serial();
 
     }
 

@@ -5,6 +5,7 @@ import com.twu.biblioteca.controller.UserManager;
 import com.twu.biblioteca.controller.UserManagerTest;
 import com.twu.biblioteca.model.Item;
 import com.twu.biblioteca.model.User;
+import com.twu.biblioteca.service.Library;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,8 @@ public class ConsoleTest {
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private ItemManager itemManager;
     private FrontEnd2 userFront;
+    private Library library;
+    private UserManager userManager;
 
     @Before
     public void setup() throws Exception{
@@ -45,14 +48,24 @@ public class ConsoleTest {
         itemManager = new ItemManager();
         Item.resetId();
         FrontEndTest.addItems(itemManager);
-        userFront = new FrontEnd2(itemManager, new User("user1", "123456", 1, "123@g.com", "13912345678"), new Scanner(System.in));
+
         User root = new User("root", "r654321", 0, "email", "phone");
 
-        UserManager userManager = new UserManager();
+        this.userManager = new UserManager();
 
         UserManagerTest.addUsers(userManager);
 
-        return new Console(root, itemManager, userManager);
+        library = new Library(userManager, itemManager);
+
+        userFront = new FrontEnd2(itemManager, new User("user1", "123456", 1, "123@g.com", "13912345678"), new Scanner(System.in));
+
+        return new Console(root, library);
+    }
+
+    private Console createConsoleWithInput(String input) {
+        Console console = createConsole();
+        consoleInput(input);
+        return console;
     }
 
     private void consoleInput(String instruction){
@@ -67,7 +80,7 @@ public class ConsoleTest {
         console.displayWelcome();
         assertEquals(outContent.toString(), Console.welcome());
     }
-    
+
     @Test
     public void should_display_menu() throws Exception {
         Console console = createConsole();
@@ -102,11 +115,6 @@ public class ConsoleTest {
                 Console.menu() + Console.quit());
     }
 
-    private Console createConsoleWithInput(String input) {
-        Console console = createConsole();
-        consoleInput(input);
-        return console;
-    }
 
     @Test
     public void should_login_as_Common_User_failed() throws Exception {

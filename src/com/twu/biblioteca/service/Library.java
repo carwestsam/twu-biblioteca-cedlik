@@ -73,4 +73,12 @@ public class Library {
     public ArrayList<Item> getListByItemType(Item.TYPES itemType) {
         return itemManager.getAvailableItemListByType(itemType);
     }
+
+    public UserManager getUserManager() {
+        return userManager;
+    }
+
+    public ItemManager getItemManager() {
+        return itemManager;
+    }
 }
