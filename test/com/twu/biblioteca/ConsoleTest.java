@@ -129,6 +129,6 @@ public class ConsoleTest {
                 Console.menu() + Console.passwordContent(0) + Console.loginSuccessContent(0) + console.rootInform() +
                 Console.menu() + Console.quit());
 
-        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book, 1).size() , is (1));
+        assertThat(itemManager.getItemListByTypeAndCheckout(Item.TYPES.Book, 1).size() , is (1));
     }
 }

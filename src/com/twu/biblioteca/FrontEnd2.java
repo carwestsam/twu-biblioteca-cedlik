@@ -50,7 +50,7 @@ public class FrontEnd2 {
     }
 
     public String available(Item.TYPES itemType, int available) {
-        ArrayList<Item> itemListByType = itemManager.getAvailableItemListByType(itemType, available);
+        ArrayList<Item> itemListByType = itemManager.getItemListByTypeAndCheckout(itemType, available);
         ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
         for ( Item item : itemListByType ){
             mapList.add(item.getHashMap());

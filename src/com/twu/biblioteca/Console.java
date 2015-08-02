@@ -111,7 +111,7 @@ public class Console {
     }
 
     public String rootInform() {
-        ArrayList<Item> itemListByType = itemManager.getAvailableItemListByType(Item.TYPES.Book, 1);
+        ArrayList<Item> itemListByType = itemManager.getItemListByTypeAndCheckout(Item.TYPES.Book, 1);
 
         ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
         for ( Item item : itemListByType ){
