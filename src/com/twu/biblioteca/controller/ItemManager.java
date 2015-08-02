@@ -66,4 +66,8 @@ public class ItemManager {
         }
         return 1;
     }
+
+    public int getItemCount() {
+        return itemList.size();
+    }
 }

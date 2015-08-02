@@ -55,5 +55,14 @@ public class ItemManagerTest {
         itemManager.add(new Movie("movie2", 1999, "name2", -1));
         return itemManager;
     }
+    public static void addItems(ItemManager itemManager) {
+        itemManager.add(new Book("a", "aa", 1992));
+        itemManager.add(new Book("b", "bb", 1993));
+        itemManager.add(new Movie("A", 1931, "AA", 5));
+        itemManager.add(new Book("c", "cc", 1994));
+        itemManager.add(new Movie("B", 1932, "BB", -1));
+        itemManager.add(new Movie("C", 1933, "CC", 2));
+        itemManager.add(new Book("d", "dd", 1995));
+    }
 
 }

@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class ConsoleTest {
@@ -42,10 +43,10 @@ public class ConsoleTest {
 
     private Console createConsole() {
         itemManager = new ItemManager();
+        Item.resetId();
         FrontEndTest.addItems(itemManager);
         userFront = new FrontEnd2(itemManager, new User("user1", "123456", 1, "123@g.com", "13912345678"), new Scanner(System.in));
         User root = new User("root", "r654321", 0, "email", "phone");
-
 
         UserManager userManager = new UserManager();
 
@@ -115,5 +116,19 @@ public class ConsoleTest {
                 Console.menu() + Console.userLoginContent() + Console.passwordContent(1) + Console.loginFailedContent(1) +
                         Console.menu() + Console.quit());
     }
-    
+
+    @Test
+    public void should_login_common_checkout_a_book_and_list_in_root() throws Exception {
+        Console console = createConsoleWithInput("1\nuser1\np123\n2\n2\n0\n2\nr654321\n0\n");
+        console.start();
+
+        assertEquals(outContent.toString(), Console.menu() +
+                Console.userLoginContent() + Console.passwordContent(1) + Console.loginSuccessContent(1) +
+                FrontEnd2.menu() + FrontEnd2.checkoutContent(Item.TYPES.Book) + FrontEnd2.checkoutSuccessContent(Item.TYPES.Book) +
+                FrontEnd2.menu() + FrontEnd2.quit() +
+                Console.menu() + Console.passwordContent(0) + Console.loginSuccessContent(0) + console.rootInform() +
+                Console.menu() + Console.quit());
+
+        assertThat(itemManager.getAvailableItemListByType(Item.TYPES.Book, 1).size() , is (1));
+    }
 }

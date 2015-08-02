@@ -138,7 +138,6 @@ public class FrontEnd2 {
                 display(checkoutFailedContent(itemType));
             }
         }
-
     }
     public static String menu() {
         String menu = "\n---\n\n" +

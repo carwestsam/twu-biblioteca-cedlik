@@ -4,7 +4,10 @@ import com.twu.biblioteca.controller.ItemManager;
 import com.twu.biblioteca.controller.UserManager;
 import com.twu.biblioteca.model.Item;
 import com.twu.biblioteca.model.User;
+import com.twu.biblioteca.service.Table;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -42,7 +45,8 @@ public class Console {
 
     public static String menu() {
         return  "[1]\tLogin \n" +
-                "[2]\tQuit \n";
+                "[2]\tLogin as root\n" +
+                "[0]\tQuit \n";
     }
 
     public void start() {
@@ -100,10 +104,22 @@ public class Console {
         if ( root.checkPassword(pwd) ){
             display(loginSuccessContent(0));
             userFront = new FrontEnd2(itemManager, root, new Scanner(System.in));
-            display(userFront.available(Item.TYPES.Book, 1));
+            display(rootInform());
         }else {
             display(loginFailedContent(0));
         }
+    }
+
+    public String rootInform() {
+        ArrayList<Item> itemListByType = itemManager.getAvailableItemListByType(Item.TYPES.Book, 1);
+
+        ArrayList<HashMap<String, String>> mapList = new ArrayList<>();
+        for ( Item item : itemListByType ){
+            mapList.add(item.getHashMap());
+        }
+
+        return (new Table(itemManager.getHeaderListByType(Item.TYPES.Book), mapList)).Serial();
+
     }
 
     public static String loginFailedContent(int userType) {
